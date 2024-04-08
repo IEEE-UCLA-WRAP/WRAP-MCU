@@ -1,0 +1,7 @@
+stm32h7xx_hal_msp.c:64:6:HAL_MspInit	1
+stm32h7xx_hal_msp.c:85:6:HAL_DAC_MspInit	3
+stm32h7xx_hal_msp.c:127:6:HAL_DAC_MspDeInit	2
+stm32h7xx_hal_msp.c:152:6:HAL_OPAMP_MspInit	2
+stm32h7xx_hal_msp.c:185:6:HAL_OPAMP_MspDeInit	2
+stm32h7xx_hal_msp.c:213:6:HAL_TIM_Base_MspInit	2
+stm32h7xx_hal_msp.c:235:6:HAL_TIM_Base_MspDeInit	2
