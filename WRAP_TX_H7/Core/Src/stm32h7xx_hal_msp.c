@@ -65,6 +65,7 @@ extern DMA_HandleTypeDef hdma_usart3_rx;
   */
 void HAL_MspInit(void)
 {
+
   /* USER CODE BEGIN MspInit 0 */
 
   /* USER CODE END MspInit 0 */
