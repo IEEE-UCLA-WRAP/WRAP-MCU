@@ -40,8 +40,7 @@ void normalize(const uint16_t * samples, float * norm_samples) {
     }
 }
 
-
-
+// Implementation of the zero-crossing timing recovery algorithm
 int timing_recovery(float * filtered_samps, float * symbs, params_r * params) {
     const float kp_PLL = 0.1;
     const float ki_PLL = 0.05;

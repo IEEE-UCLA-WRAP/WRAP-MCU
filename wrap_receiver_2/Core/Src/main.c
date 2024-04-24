@@ -25,7 +25,6 @@
 #include "constants.h"
 #include "receiver.h"
 #include "arm_math.h"
-//#include "receiver.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,6 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+// Function Declarations for demodulation
 int demodulate(const uint16_t * samples, int * symbs, params_r * params);
 void costas_loop(float * norm_samples, float * samples_d, params_r * params);
 uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs);
@@ -128,6 +128,8 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  // HAL Code to initialize ADCs for interleaved mode
   HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
   HAL_ADCEx_Calibration_Start(&hadc2, ADC_SINGLE_ENDED);
   // Starts slave ADC (ADC2); this must be started before ADC1. It won't do anything until triggered by ADC1 anyways.
@@ -135,19 +137,20 @@ int main(void)
   // Starts master ADC (ADC1) with fancy multi DMA command. Here is where we specify which buffer the DMA should store values in and how large the buffer is
   HAL_ADCEx_MultiModeStart_DMA(&hadc1,adc_buf,ADC_BUF_LEN);
 
-  // set timer for execution timing
+  // Set timer for execution timing
   HAL_TIM_Base_Start(&htim2);
   __HAL_TIM_SET_COUNTER(&htim2, 0);
 
   uint16_t * samples;
   uint8_t packet_found;
 
-  // setup params
+  // Initialize params container for costas loop and timing recovery
   params_r params = {.CL_phase = 0,
   					 .CL_integrator = 0,
 					 .TR_phase = 0,
 					 .TR_integrator = 0,
 					 .sps = SPS};
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -173,6 +176,7 @@ int main(void)
 	  num_symbs = demodulate(buffer_1, temp_symbs, &params);
 	  end = __HAL_TIM_GET_COUNTER(&htim2);
 	  total_symbs += num_symbs;
+
 	  // add temp_symbs to running buffer for correlation
 	  // shift latest entries
 	  for (int j = 0; j < SYMBOL_BUFF-num_symbs; j++) {
@@ -182,9 +186,12 @@ int main(void)
 		  symbol_buffer[SYMBOL_BUFF-1-num_symbs+j] = temp_symbs[j];
 	  }
 
+    // Once we have enough symbols, we can check for a packet
 	  if (total_symbs >= NUM_SYMBS) {
+      // check for packet
 			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
 			if (packet_found) {
+        // concatenate bits into a string and send over UART
 				for (int i = 0; i < NUM_SYMBS- (NUM_PACKET_H * 15); i = i+8) {
 					uint8_t result = 0;
 					for(int j = 0; j < 8; j++)
@@ -560,9 +567,9 @@ int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
 
     normalize(samples, norm_samples);
 
-    // Costas Loop
+    // Costas Loop (norm_samples -> samples_d)
     costas_loop(norm_samples, samples_d, params);
-    // filter w SRRC
+    // Filter w SRRC (samples_d -> filtered_samps)
     arm_conv_f32(samples_d, ADC_BUF_LEN, RRC, RRC_LEN, filtered_samps);
     // readjust window
     float shift = RRC_LEN/2. - 0.5;
@@ -572,7 +579,7 @@ int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
         filtered_samps[k] = filtered_samps[i];
     }
 
-    // timing recovery
+    // Timing recovery (filtered_samps -> symbs)
     int bit_len = timing_recovery(filtered_samps, symbs, params);
 
     return bit_len;
@@ -629,11 +636,11 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
             shift = SYMBOL_BUFF+14-i;
             packet_found = 1;
             if (xcorr_out[i] < 0) {
-				for (int j = 0; j < BITS; j++) {
-					symbs[shift + j] = symbs[shift+ j]*-1;
-				}
+              for (int j = 0; j < BITS; j++) {
+                symbs[shift + j] = symbs[shift+ j]*-1;
+              }
             }
-            break;
+          break;
         }
     }
 
