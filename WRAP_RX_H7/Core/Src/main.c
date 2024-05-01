@@ -56,6 +56,8 @@ uint32_t adcbuf[ADC_BUF_SIZE];							// temp buffer that gets filled by DMA befo
 uint32_t i = 0;											// variable to keep track of how many samples have been collected
 volatile uint8_t adcflag = RESET;						// keeps track of if desired number of samples reached
 double CONVERSION_FACTOR = 3300.0/4096.0;				// conversion factor for ADC value to voltage (mV)
+uint16_t adc1value = 0;
+uint16_t adc2value = 0;
 
 /* USER CODE END PV */
 
@@ -129,6 +131,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  adc1value = (adcbuf[0]&0x0000FFFF);
+	  adc2value = (adcbuf[0] >> 16);
+
   }
   /* USER CODE END 3 */
 }
@@ -447,6 +453,18 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  // For some reason STM32 didn't autogenerate this for me?
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
@@ -454,30 +472,32 @@ static void MX_GPIO_Init(void)
 
 // Called when first half of buffer is filled
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc) {
-  // copies ADC/DMA temp buffer into sample buffer
-  for(int j = 0; j < ADC_BUF_SIZE/2; j++)
-  {
-	  samples[i] = adcbuf[j];
-	  i++;
-  }
+//  // copies ADC/DMA temp buffer into sample buffer
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+//  for(int j = 0; j < ADC_BUF_SIZE/2; j++)
+//  {
+//	  samples[i] = adcbuf[j];
+//	  i++;
+//  }
 }
 
 // Called when buffer is completely filled
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-
-  // copies ADC/DMA temp buffer into sample buffer
-  for(int j = ADC_BUF_SIZE/2; j < ADC_BUF_SIZE; j++)
-  {
-    samples[i] = adcbuf[j];
-    i++;
-  }
-
-  // if enough samples taken, stops ADC and DMA
-  if(i >= SAMPLE_BUF_MULTIPLE * ADC_BUF_SIZE)
-  {
-	  adcflag = SET;
-	  HAL_ADCEx_MultiModeStop_DMA(hadc);
-  }
+//
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+//  // copies ADC/DMA temp buffer into sample buffer
+//  for(int j = ADC_BUF_SIZE/2; j < ADC_BUF_SIZE; j++)
+//  {
+//    samples[i] = adcbuf[j];
+//    i++;
+//  }
+//
+//  // if enough samples taken, stops ADC and DMA
+//  if(i >= SAMPLE_BUF_MULTIPLE * ADC_BUF_SIZE)
+//  {
+//	  adcflag = SET;
+//	  HAL_ADCEx_MultiModeStop_DMA(hadc);
+//  }
 }
 
 /* USER CODE END 4 */
