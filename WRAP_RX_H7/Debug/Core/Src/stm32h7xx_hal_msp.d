@@ -5,11 +5,11 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7a3xxq.h \
- C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/core_cm7.h \
- C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_version.h \
- C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_compiler.h \
- C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_gcc.h \
- C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/mpu_armv7.h \
+ C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/core_cm7.h \
+ C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_version.h \
+ C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_compiler.h \
+ C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_gcc.h \
+ C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h \
@@ -41,11 +41,11 @@ Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7a3xxq.h:
-C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/core_cm7.h:
-C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_version.h:
-C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_compiler.h:
-C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_gcc.h:
-C:/Users/domko/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/mpu_armv7.h:
+C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/core_cm7.h:
+C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_version.h:
+C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_compiler.h:
+C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/cmsis_gcc.h:
+C:/Users/Nathan\ Nguyendinh/Documents/GitHub/WRAP-MCU/WRAP_RX_H7/Drivers/CMSIS/Include/mpu_armv7.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h:

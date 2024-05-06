@@ -60,8 +60,8 @@ all: main-build
 main-build: WRAP_RX_H7.elf secondary-outputs
 
 # Tool invocations
-WRAP_RX_H7.elf WRAP_RX_H7.map: $(OBJS) $(USER_OBJS) C:\Users\domko\WRAP-MCU\WRAP_RX_H7\STM32H7A3ZITXQ_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "WRAP_RX_H7.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\domko\WRAP-MCU\WRAP_RX_H7\STM32H7A3ZITXQ_FLASH.ld" --specs=nosys.specs -Wl,-Map="WRAP_RX_H7.map" -Wl,--gc-sections -static -L"C:\Users\domko\WRAP-MCU\WRAP_RX_H7\Drivers\CMSIS\Lib\GCC" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+WRAP_RX_H7.elf WRAP_RX_H7.map: $(OBJS) $(USER_OBJS) C:\Users\Nathan\ Nguyendinh\Documents\GitHub\WRAP-MCU\WRAP_RX_H7\STM32H7A3ZITXQ_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "WRAP_RX_H7.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\Nathan Nguyendinh\Documents\GitHub\WRAP-MCU\WRAP_RX_H7\STM32H7A3ZITXQ_FLASH.ld" --specs=nosys.specs -Wl,-Map="WRAP_RX_H7.map" -Wl,--gc-sections -static -L"C:\Users\Nathan Nguyendinh\Documents\GitHub\WRAP-MCU\WRAP_RX_H7\Drivers\CMSIS\Lib\GCC" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
