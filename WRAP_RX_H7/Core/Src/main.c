@@ -21,7 +21,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <math.h>
+#include "constants.h"
+#include "receiver.h"
+#include "arm_math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -31,9 +34,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
-#define ADC_BUF_SIZE (64)			// size of buffer that gets filled by DMA
-#define SAMPLE_BUF_MULTIPLE (8)		// size of full sample buffer in terms of ADC_BUF_SIZE. Here it will be 8 * 64 = 512
+int demodulate(const uint16_t * samples, int * symbs, params_r * params);
+void costas_loop(float * norm_samples, float * samples_d, params_r * params);
+uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs);
 
 /* USER CODE END PD */
 
@@ -47,17 +50,30 @@ ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 DMA_HandleTypeDef hdma_adc1;
 
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
-uint16_t samples[SAMPLE_BUF_MULTIPLE * ADC_BUF_SIZE];	// buffer to store all values
-uint32_t adcbuf[ADC_BUF_SIZE];							// temp buffer that gets filled by DMA before getting copied into samples[] buffer.
-uint32_t i = 0;											// variable to keep track of how many samples have been collected
-volatile uint8_t adcflag = RESET;						// keeps track of if desired number of samples reached
-double CONVERSION_FACTOR = 3300.0/4096.0;				// conversion factor for ADC value to voltage (mV)
-uint16_t adc1value = 0;
-uint16_t adc2value = 0;
+// sampling buffers
+uint32_t adc_buf[ADC_BUF_LEN];			// adc buffer
+uint16_t buffer_1[ADC_BUF_LEN];			// adc buffer
+uint16_t buffer_2[ADC_BUF_LEN];			// adc buffer
+float temp_symbs[2*NUM_SYMBS];				// 2x N_BUFF for slack
+float symbol_buffer[SYMBOL_BUFF];			// symbol buffer
+uint8_t bits[BITS];
+
+volatile uint8_t buff_flag_1 = RESET;
+volatile uint8_t buff_flag_2 = RESET;
+volatile uint8_t buff_process = RESET;
+
+uint32_t start, end, num_symbs, total_symbs;
+uint8_t t_str[NUM_CHARS];
+
+float norm_samples[ADC_BUF_LEN];
+float samples_d[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
+float filtered_samps[ADC_BUF_LEN + RRC_LEN - 1];
 
 /* USER CODE END PV */
 
@@ -70,6 +86,7 @@ static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_USART3_UART_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -118,13 +135,24 @@ int main(void)
   MX_ADC1_Init();
   MX_ADC2_Init();
   MX_USART3_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   // Starts slave ADC (ADC2); this must be started before ADC1. It won't do anything until triggered by ADC1 anyways.
 	HAL_ADC_Start(&hadc2);
 
 	// Starts master ADC (ADC1) with fancy multi DMA command. Here is where we specify which buffer the DMA should store values in and how large the buffer is
-	HAL_ADCEx_MultiModeStart_DMA(&hadc1,(uint32_t*)adcbuf,ADC_BUF_SIZE);
+	HAL_ADCEx_MultiModeStart_DMA(&hadc1, (uint32_t*) adc_buf, ADC_BUF_LEN);
+
+  uint16_t * samples;
+  uint8_t packet_found;
+
+  // setup params
+  params_r params = {.CL_phase = 0,
+  					 .CL_integrator = 0,
+					 .TR_phase = 0,
+					 .TR_integrator = 0,
+					 .sps = SPS};
 
   /* USER CODE END 2 */
 
@@ -136,8 +164,52 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  adc1value = (adcbuf[0]&0x0000FFFF);
-	  adc2value = (adcbuf[0] >> 16);
+	// execute one buffer at a time. Look at SWV console to see if computation time is too long
+	// alias buffer for ease
+	if (buff_flag_1) {
+	  samples = buffer_1;
+	}
+	if (buff_flag_2) {
+	  samples = buffer_2;
+	}
+
+	if (buff_flag_1 || buff_flag_2) {
+	  packet_found = 0;
+	  // demodulate buffer
+	  start = __HAL_TIM_GET_COUNTER(&htim2);
+	  num_symbs = demodulate(buffer_1, temp_symbs, &params);
+	  end = __HAL_TIM_GET_COUNTER(&htim2);
+	  total_symbs += num_symbs;
+	  // add temp_symbs to running buffer for correlation
+	  // shift latest entries
+	  for (int j = 0; j < SYMBOL_BUFF-num_symbs; j++) {
+		  symbol_buffer[j] = symbol_buffer[j+num_symbs];
+	  }
+	  for (int j = 0; j < num_symbs; j++) {
+		  symbol_buffer[SYMBOL_BUFF-1-num_symbs+j] = temp_symbs[j];
+	  }
+
+	  if (total_symbs >= NUM_SYMBS) {
+			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
+			if (packet_found) {
+				for (int i = 0; i < NUM_SYMBS- (NUM_PACKET_H * 15); i = i+8) {
+					uint8_t result = 0;
+					for(int j = 0; j < 8; j++)
+					{
+						result <<= 1;
+						result += bits[i + j];
+					}
+					t_str[i>>3] = result;
+				}
+				HAL_UART_Transmit(&huart3, (uint8_t *)t_str, sizeof(t_str), 100);
+			}
+
+			total_symbs = 0;
+	  }
+	  buff_process = RESET;
+	  buff_flag_1 = RESET;
+	  buff_flag_2 = RESET;
+	}
 
   }
   /* USER CODE END 3 */
@@ -386,6 +458,51 @@ static void MX_ADC2_Init(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 280;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 4294967295;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief USART3 Initialization Function
   * @param None
   * @retval None
@@ -498,35 +615,129 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
-// Called when first half of buffer is filled
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc) {
-//  // copies ADC/DMA temp buffer into sample buffer
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-//  for(int j = 0; j < ADC_BUF_SIZE/2; j++)
-//  {
-//	  samples[i] = adcbuf[j];
-//	  i++;
-//  }
+  // toggles buffer status pin so sampling rate can be measured
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+
+  // copies ADC/DMA temp buffer into sample buffer
+  if (!buff_process){
+	buff_process = SET;
+	buff_flag_1 = SET;
+	buff_flag_2 = RESET;
+	for(int j = 0; j < ADC_BUF_LEN/2; j++)
+	{
+	  buffer_1[2*j] = (uint16_t)(adc_buf[j]&0x0000FFFF);
+	  buffer_1[2*j+1] = (uint16_t)(adc_buf[j]>>16);
+	}
+  }
 }
 
 // Called when buffer is completely filled
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
-//
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-//  // copies ADC/DMA temp buffer into sample buffer
-//  for(int j = ADC_BUF_SIZE/2; j < ADC_BUF_SIZE; j++)
-//  {
-//    samples[i] = adcbuf[j];
-//    i++;
-//  }
-//
-//  // if enough samples taken, stops ADC and DMA
-//  if(i >= SAMPLE_BUF_MULTIPLE * ADC_BUF_SIZE)
-//  {
-//	  adcflag = SET;
-//	  HAL_ADCEx_MultiModeStop_DMA(hadc);
-//  }
+  // toggles buffer status pin so sampling rate can be measured
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+
+  // copies ADC/DMA temp buffer into sample buffer
+  if (!buff_process){
+	buff_process = SET;
+	buff_flag_2 = SET;
+	buff_flag_1 = RESET;
+	for(int j = 0; j < ADC_BUF_LEN/2; j++) {
+	buffer_2[2*j] = (uint16_t) adc_buf[j+ADC_BUF_LEN/2]*0x0000FFFF;
+	buffer_2[2*j+1] = (uint16_t) adc_buf[j+ADC_BUF_LEN/2]>>16;
+	}
+  }
+}
+
+int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
+
+    normalize(samples, norm_samples);
+
+    // Costas Loop
+    costas_loop(norm_samples, samples_d, params);
+    // filter w SRRC
+    arm_conv_f32(samples_d, ADC_BUF_LEN, RRC, RRC_LEN, filtered_samps);
+    // readjust window
+    float shift = RRC_LEN/2. - 0.5;
+    int k;
+    for (int i = shift ; i < ADC_BUF_LEN+RRC_LEN-1-shift; i++) {
+        k = i - shift;
+        filtered_samps[k] = filtered_samps[i];
+    }
+
+    // timing recovery
+    int bit_len = timing_recovery(filtered_samps, symbs, params);
+
+    return bit_len;
+}
+
+void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
+    float phase = params->CL_phase;
+    float inph[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float quad[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float inph_[ORDER+1] = {0, 0, 0, 0, 0, 0};
+    float quad_[ORDER+1] = {0, 0, 0, 0, 0, 0};
+    double error = 0;
+    float integrator = 0; //params->CL_integrator;
+
+    float kp = 8.5;
+    float ki = 0.1;
+    float dt = (float)FC / (float)FS;
+
+    for (int i = ORDER; i < ADC_BUF_LEN+ORDER; i++) {
+        // define t from microcontroller
+        int k = i - ORDER;
+        inph_[ORDER] = norm_samples[k]*2*cos(2*M_PI*dt*k + phase);
+        quad_[ORDER] = norm_samples[k]*-2*sin(2*M_PI*dt*k + phase);
+
+        arm_conv_f32(inph_, ORDER+1, lp, ORDER+1, inph);
+        arm_conv_f32(quad_, ORDER+1, lp, ORDER+1, quad);
+
+        samples_d[k] = inph[ORDER];
+
+        error = inph[ORDER] * quad[ORDER];
+        integrator += ki*error;
+        phase = phase + kp*error + integrator;
+
+        // shift the values of inph_ and quad_
+        for (int jx = 1; jx < ORDER+1; jx++) {
+            inph_[jx-1] = inph_[jx];
+            quad_[jx-1] = quad_[jx];
+        }
+    }
+    params->CL_phase = remainder(phase, 2*M_PI);
+    params->CL_integrator = remainder(integrator, 2*M_PI);
+}
+
+uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
+    // take cross correlation
+    float xcorr_out[SYMBOL_BUFF+14];
+    uint8_t packet_found = 0;
+    arm_correlate_f32(key, 15, symbs, num_symbs, xcorr_out);
+
+    // find packet
+    int shift = 0;
+    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
+        if (fabs(xcorr_out[i]) > 14) {
+            shift = SYMBOL_BUFF+14-i;
+            packet_found = 1;
+            if (xcorr_out[i] < 0) {
+				for (int j = 0; j < BITS; j++) {
+					symbs[shift + j] = symbs[shift+ j]*-1;
+				}
+            }
+            break;
+        }
+    }
+
+    if (!packet_found)
+        return 0;
+
+    // convert symbols to bits
+    for (int i = 0; i < BITS; i++) {
+        bits[i] = (symbs[shift+i]+1)*0.5;
+    }
+    return 1;
 }
 
 /* USER CODE END 4 */
