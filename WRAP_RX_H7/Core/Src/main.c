@@ -34,10 +34,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-// TODO: Uncomment Function Declarations
-//int demodulate(const uint16_t * samples, int * symbs, params_r * params);
-//void costas_loop(float * norm_samples, float * samples_d, params_r * params);
-//uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs);
+int demodulate(const uint16_t * samples, int * symbs, params_r * params);
+void costas_loop(float * norm_samples, float * samples_d, params_r * params);
+uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs);
 
 /* USER CODE END PD */
 
@@ -64,21 +63,20 @@ uint16_t buffer_2[ADC_BUF_LEN];			// adc buffer
 uint16_t adc1_reading;
 uint16_t adc2_reading;
 
-// TODO: Bring back some stuffs
-//float temp_symbs[2*NUM_SYMBS];				// 2x N_BUFF for slack
-//float symbol_buffer[SYMBOL_BUFF];			// symbol buffer
-//uint8_t bits[BITS];
+float temp_symbs[2*NUM_SYMBS];				// 2x N_BUFF for slack
+float symbol_buffer[SYMBOL_BUFF];			// symbol buffer
+uint8_t bits[BITS];
 
 volatile uint8_t buff_flag_1 = RESET;
 volatile uint8_t buff_flag_2 = RESET;
 volatile uint8_t buff_process = RESET;
-//
-//uint32_t start, end, num_symbs, total_symbs;
-//uint8_t t_str[NUM_CHARS];
-//
-//float norm_samples[ADC_BUF_LEN];
-//float samples_d[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
-//float filtered_samps[ADC_BUF_LEN + RRC_LEN - 1];
+
+uint32_t start, end, num_symbs, total_symbs;
+uint8_t t_str[NUM_CHARS];
+float norm_samples[ADC_BUF_LEN];
+float samples_d[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
+float Quad[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
+float filtered_samps[ADC_BUF_LEN + RRC_LEN - 1];
 
 /* USER CODE END PV */
 
@@ -149,16 +147,15 @@ int main(void)
   // Starts master ADC (ADC1) with fancy multi DMA command. Here is where we specify which buffer the DMA should store values in and how large the buffer is
   HAL_ADCEx_MultiModeStart_DMA(&hadc1, (uint32_t*) adc_buf, ADC_BUF_LEN);
 
-  // TODO: Bring Back
-//  uint16_t * samples;
-//  uint8_t packet_found;
-//
-//  // setup params
-//  params_r params = {.CL_phase = 0,
-//  					 .CL_integrator = 0,
-//					 .TR_phase = 0,
-//					 .TR_integrator = 0,
-//					 .sps = SPS};
+  uint16_t * samples;
+  uint8_t packet_found;
+
+  // setup params
+  params_r params = {.CL_phase = 0,
+  					 .CL_integrator = 0,
+					 .TR_phase = 0,
+					 .TR_integrator = 0,
+					 .sps = SPS};
 
   /* USER CODE END 2 */
 
@@ -169,28 +166,30 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	adc1_reading = (uint16_t)(adc_buf[0]&0x0000FFFF);
-	adc2_reading = (uint16_t)(adc_buf[0]>>16);
-	buff_process = RESET;
-	buff_flag_1 = RESET;
-	buff_flag_2 = RESET;
+	  // Nathan ADC testing code
+//	adc1_reading = (uint16_t)(adc_buf[0]&0x0000FFFF);
+//	adc2_reading = (uint16_t)(adc_buf[0]>>16);
+//	buff_process = RESET;
+//	buff_flag_1 = RESET;
+//	buff_flag_2 = RESET;
 
 	// TODO: Bring back Demod code
-//	// execute one buffer at a time. Look at SWV console to see if computation time is too long
-//	// alias buffer for ease
-//	if (buff_flag_1) {
-//	  samples = buffer_1;
-//	}
-//	if (buff_flag_2) {
-//	  samples = buffer_2;
-//	}
-//
-//	if (buff_flag_1 || buff_flag_2) {
-//	  packet_found = 0;
-//	  // demodulate buffer
-//	  start = __HAL_TIM_GET_COUNTER(&htim2);
-//	  num_symbs = demodulate(buffer_1, temp_symbs, &params);
-//	  end = __HAL_TIM_GET_COUNTER(&htim2);
+	// execute one buffer at a time. Look at SWV console to see if computation time is too long
+	// alias buffer for ease
+	if (buff_flag_1) {
+	  samples = buffer_1;
+	}
+	if (buff_flag_2) {
+	  samples = buffer_2;
+	}
+
+	if (buff_flag_1 || buff_flag_2) {
+	  packet_found = 0;
+	  // demodulate buffer
+	  start = __HAL_TIM_GET_COUNTER(&htim2);
+	  num_symbs = demodulate(buffer_1, temp_symbs, &params);
+	  end = __HAL_TIM_GET_COUNTER(&htim2);
+	  // TODO: Bring back symbol assembly
 //	  total_symbs += num_symbs;
 //	  // add temp_symbs to running buffer for correlation
 //	  // shift latest entries
@@ -218,10 +217,10 @@ int main(void)
 //
 //			total_symbs = 0;
 //	  }
-//	  buff_process = RESET;
-//	  buff_flag_1 = RESET;
-//	  buff_flag_2 = RESET;
-//	}
+	  buff_process = RESET;
+	  buff_flag_1 = RESET;
+	  buff_flag_2 = RESET;
+	}
 
   }
   /* USER CODE END 3 */
@@ -661,66 +660,69 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
   }
 }
 // TODO: Bring back these
-//int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
-//
-//    normalize(samples, norm_samples);
-//
-//    // Costas Loop
-//    costas_loop(norm_samples, samples_d, params);
-//    // filter w SRRC
-//    arm_conv_f32(samples_d, ADC_BUF_LEN, RRC, RRC_LEN, filtered_samps);
-//    // readjust window
-//    float shift = RRC_LEN/2. - 0.5;
-//    int k;
-//    for (int i = shift ; i < ADC_BUF_LEN+RRC_LEN-1-shift; i++) {
-//        k = i - shift;
-//        filtered_samps[k] = filtered_samps[i];
-//    }
-//
+int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
+
+    normalize(samples, norm_samples);
+
+//     Costas Loop
+    costas_loop(norm_samples, samples_d, params);
+    // filter w SRRC
+    arm_conv_f32(samples_d, ADC_BUF_LEN, RRC, RRC_LEN, filtered_samps);
+    // readjust window
+    float shift = RRC_LEN/2. - 0.5;
+    int k;
+    for (int i = shift ; i < ADC_BUF_LEN+RRC_LEN-1-shift; i++) {
+        k = i - shift;
+        filtered_samps[k] = filtered_samps[i];
+    }
+
 //    // timing recovery
 //    int bit_len = timing_recovery(filtered_samps, symbs, params);
 //
 //    return bit_len;
-//}
-//
-//void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
-//    float phase = params->CL_phase;
-//    float inph[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-//    float quad[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-//    float inph_[ORDER+1] = {0, 0, 0, 0, 0, 0};
-//    float quad_[ORDER+1] = {0, 0, 0, 0, 0, 0};
-//    double error = 0;
-//    float integrator = 0; //params->CL_integrator;
-//
-//    float kp = 8.5;
-//    float ki = 0.1;
-//    float dt = (float)FC / (float)FS;
-//
-//    for (int i = ORDER; i < ADC_BUF_LEN+ORDER; i++) {
-//        // define t from microcontroller
-//        int k = i - ORDER;
-//        inph_[ORDER] = norm_samples[k]*2*cos(2*M_PI*dt*k + phase);
-//        quad_[ORDER] = norm_samples[k]*-2*sin(2*M_PI*dt*k + phase);
-//
-//        arm_conv_f32(inph_, ORDER+1, lp, ORDER+1, inph);
-//        arm_conv_f32(quad_, ORDER+1, lp, ORDER+1, quad);
-//
-//        samples_d[k] = inph[ORDER];
-//
-//        error = inph[ORDER] * quad[ORDER];
-//        integrator += ki*error;
-//        phase = phase + kp*error + integrator;
-//
-//        // shift the values of inph_ and quad_
-//        for (int jx = 1; jx < ORDER+1; jx++) {
-//            inph_[jx-1] = inph_[jx];
-//            quad_[jx-1] = quad_[jx];
-//        }
-//    }
-//    params->CL_phase = remainder(phase, 2*M_PI);
-//    params->CL_integrator = remainder(integrator, 2*M_PI);
-//}
-//
+    // TODO: Delete this
+    return 0;
+}
+
+void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
+    float phase = params->CL_phase;
+    float inph[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float quad[2*ORDER+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    float inph_[ORDER+1] = {0, 0, 0, 0, 0, 0};
+    float quad_[ORDER+1] = {0, 0, 0, 0, 0, 0};
+    double error = 0;
+    float integrator = 0; //params->CL_integrator;
+
+    float kp = 8.5;
+    float ki = 0.1;
+    float dt = (float)FC / (float)FS;
+
+    for (int i = ORDER; i < ADC_BUF_LEN+ORDER; i++) {
+        // define t from microcontroller
+        int k = i - ORDER;
+        inph_[ORDER] = norm_samples[k]*2*cos(2*M_PI*dt*k + phase);
+        quad_[ORDER] = norm_samples[k]*-2*sin(2*M_PI*dt*k + phase);
+
+        arm_conv_f32(inph_, ORDER+1, lp, ORDER+1, inph);
+        arm_conv_f32(quad_, ORDER+1, lp, ORDER+1, quad);
+
+        samples_d[k] = inph[ORDER];
+        Quad[k] = quad[ORDER];
+
+        error = inph[ORDER] * quad[ORDER];
+        integrator += ki*error;
+        phase = phase + kp*error + integrator;
+
+        // shift the values of inph_ and quad_
+        for (int jx = 1; jx < ORDER+1; jx++) {
+            inph_[jx-1] = inph_[jx];
+            quad_[jx-1] = quad_[jx];
+        }
+    }
+    params->CL_phase = remainder(phase, 2*M_PI);
+    params->CL_integrator = remainder(integrator, 2*M_PI);
+}
+
 //uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
 //    // take cross correlation
 //    float xcorr_out[SYMBOL_BUFF+14];
