@@ -12,7 +12,7 @@
 
 #define RRC_LEN 251             // length of square root raised cosine filter
 #define FS 5000000
-#define FC 940000 //1000000 //915000.
+#define FC 1000000 //1000000 //915000.
 #define RS 50000
 #define SPS (FS/RS)
 #define NUM_CHARS 1

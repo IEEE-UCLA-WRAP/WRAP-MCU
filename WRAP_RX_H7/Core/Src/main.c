@@ -81,6 +81,9 @@ float samples_d[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
 float Quad[ADC_BUF_LEN] = {0, 0, 0, 0, 0, 0};
 float filtered_samps[ADC_BUF_LEN + RRC_LEN - 1];
 
+uint8_t packet_found;
+uint8_t result;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -169,23 +172,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  // Nathan ADC testing code
-//	adc1_reading = (uint16_t)(adc_buf[0]&0x0000FFFF);
-//	adc2_reading = (uint16_t)(adc_buf[0]>>16);
-//	buff_process = RESET;
-//	buff_flag_1 = RESET;
-//	buff_flag_2 = RESET;
 
-	// TODO: Bring back Demod code
 	// execute one buffer at a time. Look at SWV console to see if computation time is too long
 	// alias buffer for ease
 	if (buff_flag_1) {
-//	  samples = buffer_1;
-		samples = HARDCODED_BUFFER;
+	  samples = buffer_1;
 	}
 	if (buff_flag_2) {
-//	  samples = buffer_2;
-		samples = HARDCODED_BUFFER;
+	  samples = buffer_2;
 	}
 
 	if (buff_flag_1 || buff_flag_2) {
@@ -194,34 +188,34 @@ int main(void)
 	  start = __HAL_TIM_GET_COUNTER(&htim2);
 	  num_symbs = demodulate(samples, temp_symbs, &params);
 	  end = __HAL_TIM_GET_COUNTER(&htim2);
-	  // TODO: Bring back symbol assembly
-//	  total_symbs += num_symbs;
-//	  // add temp_symbs to running buffer for correlation
-//	  // shift latest entries
-//	  for (int j = 0; j < SYMBOL_BUFF-num_symbs; j++) {
-//		  symbol_buffer[j] = symbol_buffer[j+num_symbs];
-//	  }
-//	  for (int j = 0; j < num_symbs; j++) {
-//		  symbol_buffer[SYMBOL_BUFF-1-num_symbs+j] = temp_symbs[j];
-//	  }
-//
-//	  if (total_symbs >= NUM_SYMBS) {
-//			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
-//			if (packet_found) {
-//				for (int i = 0; i < NUM_SYMBS- (NUM_PACKET_H * 15); i = i+8) {
-//					uint8_t result = 0;
-//					for(int j = 0; j < 8; j++)
-//					{
-//						result <<= 1;
-//						result += bits[i + j];
-//					}
-//					t_str[i>>3] = result;
-//				}
-//				HAL_UART_Transmit(&huart3, (uint8_t *)t_str, sizeof(t_str), 100);
-//			}
-//
-//			total_symbs = 0;
-//	  }
+
+	  total_symbs += num_symbs;
+	  // add temp_symbs to running buffer for correlation
+	  // shift latest entries
+	  for (int j = 0; j < SYMBOL_BUFF-num_symbs; j++) {
+		  symbol_buffer[j] = symbol_buffer[j+num_symbs];
+	  }
+	  for (int j = 0; j < num_symbs; j++) {
+		  symbol_buffer[SYMBOL_BUFF-1-num_symbs+j] = temp_symbs[j];
+	  }
+
+	  if (total_symbs >= NUM_SYMBS) {
+			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
+			if (packet_found) {
+				for (int i = 0; i < NUM_SYMBS- (NUM_PACKET_H * 15); i = i+8) {
+					result = 0;
+					for(int j = 0; j < 8; j++)
+					{
+						result <<= 1;
+						result += bits[i + j];
+					}
+					t_str[i>>3] = result;
+				}
+				HAL_UART_Transmit(&huart3, (uint8_t *)t_str, sizeof(t_str), 100);
+			}
+
+			total_symbs = 0;
+	  }
 	  buff_process = RESET;
 	  buff_flag_1 = RESET;
 	  buff_flag_2 = RESET;
@@ -664,7 +658,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
 	  }
   }
 }
-// TODO: Bring back these
+
 int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
 
     normalize(samples, norm_samples);
@@ -681,12 +675,10 @@ int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
         filtered_samps[k] = filtered_samps[i];
     }
 
-//    // timing recovery
-//    int bit_len = timing_recovery(filtered_samps, symbs, params);
-//
-//    return bit_len;
-    // TODO: Delete this
-    return 0;
+    // timing recovery
+    int bit_len = timing_recovery(filtered_samps, symbs, params);
+
+    return bit_len;
 }
 
 void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
@@ -728,36 +720,36 @@ void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
     params->CL_integrator = remainder(integrator, 2*M_PI);
 }
 
-//uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
-//    // take cross correlation
-//    float xcorr_out[SYMBOL_BUFF+14];
-//    uint8_t packet_found = 0;
-//    arm_correlate_f32(key, 15, symbs, num_symbs, xcorr_out);
-//
-//    // find packet
-//    int shift = 0;
-//    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
-//        if (fabs(xcorr_out[i]) > 14) {
-//            shift = SYMBOL_BUFF+14-i;
-//            packet_found = 1;
-//            if (xcorr_out[i] < 0) {
-//				for (int j = 0; j < BITS; j++) {
-//					symbs[shift + j] = symbs[shift+ j]*-1;
-//				}
-//            }
-//            break;
-//        }
-//    }
-//
-//    if (!packet_found)
-//        return 0;
-//
-//    // convert symbols to bits
-//    for (int i = 0; i < BITS; i++) {
-//        bits[i] = (symbs[shift+i]+1)*0.5;
-//    }
-//    return 1;
-//}
+uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
+    // take cross correlation
+    float xcorr_out[SYMBOL_BUFF+14];
+    packet_found = 0;
+    arm_correlate_f32(key, 15, symbs, num_symbs, xcorr_out);
+
+    // find packet
+    int shift = 0;
+    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
+        if (fabs(xcorr_out[i]) > 14) {
+            shift = SYMBOL_BUFF+14-i;
+            packet_found = 1;
+            if (xcorr_out[i] < 0) {
+				for (int j = 0; j < BITS; j++) {
+					symbs[shift + j] = symbs[shift+ j]*-1;
+				}
+            }
+            break;
+        }
+    }
+
+    if (!packet_found)
+        return 0;
+
+    // convert symbols to bits
+    for (int i = 0; i < BITS; i++) {
+        bits[i] = (symbs[shift+i]+1)*0.5;
+    }
+    return 1;
+}
 
 /* USER CODE END 4 */
 
