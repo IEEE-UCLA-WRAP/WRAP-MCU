@@ -14,7 +14,7 @@
 #define RS 50000
 #define SPS (FS/RS)
 
-#define NUM_CHARS 1
+#define NUM_CHARS 2
 #define BITS (NUM_CHARS*8)
 #define NUM_PACKET_H 1
 #define PACKET_HEADER_LEN 15
