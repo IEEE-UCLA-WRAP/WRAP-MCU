@@ -495,8 +495,8 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	// TODO: Call a function to generate the waveform corresponding to the new message!
-	HAL_UART_Transmit(&huart3, (uint8_t *)rx_msg, 2, 1);
-	recalculate_output((uint8_t *) rx_msg, 2);
+	HAL_UART_Transmit(&huart3, (uint8_t *)rx_msg, NUM_CHARS, 1);
+	recalculate_output((uint8_t *) rx_msg, NUM_CHARS);
 
 }
 
