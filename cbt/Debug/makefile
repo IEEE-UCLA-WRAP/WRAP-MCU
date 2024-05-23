@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (12.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -60,8 +60,8 @@ all: main-build
 main-build: cbt.elf secondary-outputs
 
 # Tool invocations
-cbt.elf cbt.map: $(OBJS) $(USER_OBJS) /Users/gracekwak/Downloads/cbt/STM32G491RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "cbt.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/Users/gracekwak/Downloads/cbt/STM32G491RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cbt.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+cbt.elf cbt.map: $(OBJS) $(USER_OBJS) C:\Users\Nathan\ Nguyendinh\Documents\GitHub\WRAP-MCU\cbt\STM32G491RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "cbt.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Nathan Nguyendinh\Documents\GitHub\WRAP-MCU\cbt\STM32G491RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="cbt.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
