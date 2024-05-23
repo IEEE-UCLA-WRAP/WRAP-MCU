@@ -15,7 +15,7 @@
 #define FC 1000000 //1000000 //915000.
 #define RS 50000
 #define SPS (FS/RS)
-#define NUM_CHARS 2
+#define NUM_CHARS 15
 #define BITS (NUM_CHARS*8)
 #define NUM_PACKET_H 1
 #define NUM_SYMBS (BITS+(NUM_PACKET_H*15))                // number of symbols being transmitted (data and header)
