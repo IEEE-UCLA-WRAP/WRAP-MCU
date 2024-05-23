@@ -65,6 +65,7 @@ uint32_t dac_buf[DAC_BUF_LEN + RRC_LEN - 1] = {3660 ,2545 ,750 ,754 ,2541 ,3636 
 
 char tx_msg[100] = "test";
 char rx_msg[2];
+char temp_msg[2];
 
 /* USER CODE END PV */
 
@@ -92,8 +93,14 @@ void test_dac_overwrite(uint8_t tiny_msg) {
 
 void recalculate_output(uint8_t * message, uint16_t len) {
 
+	// Reset symbol buffer from last time
 	for(int i = 0; i < NUM_SYMBS; i++) {
 		symbol_buffer[i] = 0;
+	}
+
+	// Copy received message into temp so we don't change the original
+	for (size_t i = 0; i < sizeof(rx_msg); ++i) {
+		temp_msg[i] = message[i];
 	}
 
 	// put the packet header in the symbol buffer
@@ -102,8 +109,8 @@ void recalculate_output(uint8_t * message, uint16_t len) {
 	// put the message in the symbol buffer
 	for(int i = 0; i < len; i++) {
 		for(int j = 0; j < 8; j++) {
-			symbol_buffer[PACKET_HEADER_LEN + 8*i + 8 - 1 - j] = 2 * (int)(message[i] & 0x01) - 1;
-			message[i] = message[i] >> 1;
+			symbol_buffer[PACKET_HEADER_LEN + 8*i + 8 - 1 - j] = 2 * (int)(temp_msg[i] & 0x01) - 1;
+			temp_msg[i] = temp_msg[i] >> 1;
 		}
 	}
 
@@ -181,6 +188,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  char msg[2] = "hh";
+	  recalculate_output((uint8_t *) msg, 2);
   }
   /* USER CODE END 3 */
 }
@@ -495,8 +504,8 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	// TODO: Call a function to generate the waveform corresponding to the new message!
-	HAL_UART_Transmit(&huart3, (uint8_t *)rx_msg, sizeof(rx_msg), 1);
-	recalculate_output((uint8_t *) rx_msg, sizeof(rx_msg));
+	HAL_UART_Transmit(&huart3, (uint8_t *)rx_msg, 2, 1);
+	recalculate_output((uint8_t *) rx_msg, 2);
 
 }
 
