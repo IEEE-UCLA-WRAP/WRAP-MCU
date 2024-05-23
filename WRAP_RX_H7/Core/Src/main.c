@@ -204,10 +204,10 @@ int main(void)
 		  symbol_buffer[SYMBOL_BUFF-1-num_symbs+j] = temp_symbs[j];
 	  }
 
-	  if (total_symbs >= /*NUM_SYMBS*/ 23) {
+	  if (total_symbs >= NUM_SYMBS) {
 			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
 			if (packet_found) {
-				for (int i = 0; i < 23 /*NUM_SYMBS*/- (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
 					result = 0;
 					for(int j = 0; j < 8; j++)
 					{
