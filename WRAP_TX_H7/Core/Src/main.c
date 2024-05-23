@@ -188,8 +188,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  char msg[2] = "hh";
-	  recalculate_output((uint8_t *) msg, 2);
+
   }
   /* USER CODE END 3 */
 }
