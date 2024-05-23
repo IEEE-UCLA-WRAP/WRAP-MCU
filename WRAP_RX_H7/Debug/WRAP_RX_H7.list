@@ -571,7 +571,7 @@ int main(void)
  800071e:	d3e9      	bcc.n	80006f4 <main+0x114>
 	  }
 
-	  if (total_symbs >= NUM_SYMBS /*23*/) {
+	  if (total_symbs >= NUM_SYMBS) {
  8000720:	4b34      	ldr	r3, [pc, #208]	@ (80007f4 <main+0x214>)
  8000722:	681b      	ldr	r3, [r3, #0]
  8000724:	2b1e      	cmp	r3, #30
@@ -587,7 +587,7 @@ int main(void)
  8000736:	7efb      	ldrb	r3, [r7, #27]
  8000738:	2b00      	cmp	r3, #0
  800073a:	d031      	beq.n	80007a0 <main+0x1c0>
-				for (int i = 0; i < /*23*/ NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
  800073c:	2300      	movs	r3, #0
  800073e:	623b      	str	r3, [r7, #32]
  8000740:	e025      	b.n	800078e <main+0x1ae>
@@ -634,7 +634,7 @@ int main(void)
  8000782:	7811      	ldrb	r1, [r2, #0]
  8000784:	4a1f      	ldr	r2, [pc, #124]	@ (8000804 <main+0x224>)
  8000786:	54d1      	strb	r1, [r2, r3]
-				for (int i = 0; i < /*23*/ NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
  8000788:	6a3b      	ldr	r3, [r7, #32]
  800078a:	3308      	adds	r3, #8
  800078c:	623b      	str	r3, [r7, #32]
