@@ -15,7 +15,9 @@
 #define SPS (FS/RS)
 
 #define NUM_CHARS 15
-#define BITS (NUM_CHARS*8)
+#define NUM_PARITY_BITS 4
+#define BITS_PER_CHAR (8 + NUM_PARITY_BITS)
+#define BITS (NUM_CHARS*BITS_PER_CHAR)
 #define NUM_PACKET_H 1
 #define PACKET_HEADER_LEN 15
 #define NUM_SYMBS (BITS+(NUM_PACKET_H*PACKET_HEADER_LEN))                // number of symbols being transmitted (data and header)
