@@ -12,13 +12,14 @@
 
 #define RRC_LEN 251             // length of square root raised cosine filter
 #define FS 5000000
-#define FC 1000000 //1000000 //915000.
+#define FC 900000 //1000000 //915000.
 #define RS 50000
 #define SPS (FS/RS)
-#define NUM_CHARS 15
+#define NUM_CHARS 2
 #define BITS (NUM_CHARS*8)
 #define NUM_PACKET_H 1
-#define NUM_SYMBS (BITS+(NUM_PACKET_H*15))                // number of symbols being transmitted (data and header)
+#define PACKET_HEADER_LEN 13
+#define NUM_SYMBS (BITS+(NUM_PACKET_H*PACKET_HEADER_LEN))                // number of symbols being transmitted (data and header)
 
 #define SYMBOL_BUFF (2*NUM_SYMBS - 1)
 #define ADC_BUF_LEN (SYMBOL_BUFF * SPS)					// Number of samples moved by DMA

@@ -202,7 +202,7 @@ int main(void)
 	  if (total_symbs >= NUM_SYMBS) {
 			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
 			if (packet_found) {
-				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+8) {
 					result = 0;
 					for(int j = 0; j < 8; j++)
 					{
@@ -727,15 +727,15 @@ void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
 
 uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
     // take cross correlation
-    float xcorr_out[SYMBOL_BUFF+14];
+    float xcorr_out[SYMBOL_BUFF+PACKET_HEADER_LEN-1];
     packet_found = 0;
-    arm_correlate_f32(key, 15, symbs, num_symbs, xcorr_out);
+    arm_correlate_f32(packet_header, PACKET_HEADER_LEN, symbs, num_symbs, xcorr_out);
 
     // find packet
     int shift = 0;
-    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
-        if (fabs(xcorr_out[i]) > 14) {
-            shift = SYMBOL_BUFF+14-i;
+    for (int i = num_symbs-(NUM_PACKET_H-1)*PACKET_HEADER_LEN - 1; i >= 0; i--) {
+        if (fabs(xcorr_out[i]) > PACKET_HEADER_LEN-1) {
+            shift = SYMBOL_BUFF+PACKET_HEADER_LEN-1-i;
             packet_found = 1;
             if (xcorr_out[i] < 0) {
 				for (int j = 0; j < BITS; j++) {

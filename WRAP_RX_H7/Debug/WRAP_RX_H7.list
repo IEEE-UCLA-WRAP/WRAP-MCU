@@ -15,37 +15,37 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   5 .fini_array   00000004  0800e93c  0800e93c  0000f93c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  6 .data         000004a0  24000000  0800e940  00010000  2**2
+  6 .data         00000498  24000000  0800e940  00010000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .bss          0002a4b8  240004a0  0800ede0  000104a0  2**2
+  7 .bss          000278d8  24000498  0800edd8  00010498  2**2
                   ALLOC
-  8 ._user_heap_stack 00000600  2402a958  0800ede0  00010958  2**0
+  8 ._user_heap_stack 00000600  24027d70  0800edd8  00010d70  2**0
                   ALLOC
-  9 .ARM.attributes 0000002e  00000000  00000000  000104a0  2**0
+  9 .ARM.attributes 0000002e  00000000  00000000  00010498  2**0
                   CONTENTS, READONLY
- 10 .debug_info   0001d240  00000000  00000000  000104ce  2**0
+ 10 .debug_info   0001d231  00000000  00000000  000104c6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 11 .debug_abbrev 00003362  00000000  00000000  0002d70e  2**0
+ 11 .debug_abbrev 00003360  00000000  00000000  0002d6f7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 12 .debug_aranges 000015f0  00000000  00000000  00030a70  2**3
+ 12 .debug_aranges 000015f0  00000000  00000000  00030a58  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_rnglists 000010f8  00000000  00000000  00032060  2**0
+ 13 .debug_rnglists 000010f8  00000000  00000000  00032048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_macro  00032d1c  00000000  00000000  00033158  2**0
+ 14 .debug_macro  00032d22  00000000  00000000  00033140  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_line   0001e0ca  00000000  00000000  00065e74  2**0
+ 15 .debug_line   0001e0ca  00000000  00000000  00065e62  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_str    00154a71  00000000  00000000  00083f3e  2**0
+ 16 .debug_str    00154a88  00000000  00000000  00083f2c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .comment      000000b8  00000000  00000000  001d89af  2**0
+ 17 .comment      000000b8  00000000  00000000  001d89b4  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  000062d4  00000000  00000000  001d8a68  2**2
+ 18 .debug_frame  000062d4  00000000  00000000  001d8a6c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line_str 0000006f  00000000  00000000  001ded3c  2**0
+ 19 .debug_line_str 0000006f  00000000  00000000  001ded40  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_loc    000026a0  00000000  00000000  001dedab  2**0
+ 20 .debug_loc    000026a0  00000000  00000000  001dedaf  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_ranges 00000020  00000000  00000000  001e144b  2**0
+ 21 .debug_ranges 00000020  00000000  00000000  001e144f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -62,7 +62,7 @@ Disassembly of section .text:
  80002c2:	2301      	movs	r3, #1
  80002c4:	7023      	strb	r3, [r4, #0]
  80002c6:	bd10      	pop	{r4, pc}
- 80002c8:	240004a0 	.word	0x240004a0
+ 80002c8:	24000498 	.word	0x24000498
  80002cc:	00000000 	.word	0x00000000
  80002d0:	0800e6f0 	.word	0x0800e6f0
 
@@ -75,7 +75,7 @@ Disassembly of section .text:
  80002de:	f3af 8000 	nop.w
  80002e2:	bd08      	pop	{r3, pc}
  80002e4:	00000000 	.word	0x00000000
- 80002e8:	240004a4 	.word	0x240004a4
+ 80002e8:	2400049c 	.word	0x2400049c
  80002ec:	0800e6f0 	.word	0x0800e6f0
 
 080002f0 <__aeabi_uldivmod>:
@@ -409,7 +409,7 @@ int main(void)
 
   // Starts master ADC (ADC1) with fancy multi DMA command. Here is where we specify which buffer the DMA should store values in and how large the buffer is
   HAL_ADCEx_MultiModeStart_DMA(&hadc1, (uint32_t*) adc_buf, ADC_BUF_LEN);
- 800061a:	f241 72d4 	movw	r2, #6100	@ 0x17d4
+ 800061a:	f241 6244 	movw	r2, #5700	@ 0x1644
  800061e:	4969      	ldr	r1, [pc, #420]	@ (80007c4 <main+0x1e4>)
  8000620:	4869      	ldr	r0, [pc, #420]	@ (80007c8 <main+0x1e8>)
  8000622:	f002 ffeb 	bl	80035fc <HAL_ADCEx_MultiModeStart_DMA>
@@ -536,7 +536,7 @@ int main(void)
  80006de:	62bb      	str	r3, [r7, #40]	@ 0x28
  80006e0:	4b41      	ldr	r3, [pc, #260]	@ (80007e8 <main+0x208>)
  80006e2:	681b      	ldr	r3, [r3, #0]
- 80006e4:	f1c3 023d 	rsb	r2, r3, #61	@ 0x3d
+ 80006e4:	f1c3 0239 	rsb	r2, r3, #57	@ 0x39
  80006e8:	6abb      	ldr	r3, [r7, #40]	@ 0x28
  80006ea:	429a      	cmp	r2, r3
  80006ec:	d8e8      	bhi.n	80006c0 <main+0xe0>
@@ -550,7 +550,7 @@ int main(void)
  80006f6:	4b3c      	ldr	r3, [pc, #240]	@ (80007e8 <main+0x208>)
  80006f8:	681b      	ldr	r3, [r3, #0]
  80006fa:	1ad3      	subs	r3, r2, r3
- 80006fc:	333c      	adds	r3, #60	@ 0x3c
+ 80006fc:	3338      	adds	r3, #56	@ 0x38
  80006fe:	4939      	ldr	r1, [pc, #228]	@ (80007e4 <main+0x204>)
  8000700:	6a7a      	ldr	r2, [r7, #36]	@ 0x24
  8000702:	0092      	lsls	r2, r2, #2
@@ -574,10 +574,10 @@ int main(void)
 	  if (total_symbs >= NUM_SYMBS) {
  8000720:	4b34      	ldr	r3, [pc, #208]	@ (80007f4 <main+0x214>)
  8000722:	681b      	ldr	r3, [r3, #0]
- 8000724:	2b1e      	cmp	r3, #30
+ 8000724:	2b1c      	cmp	r3, #28
  8000726:	d93e      	bls.n	80007a6 <main+0x1c6>
 			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
- 8000728:	223d      	movs	r2, #61	@ 0x3d
+ 8000728:	2239      	movs	r2, #57	@ 0x39
  800072a:	4934      	ldr	r1, [pc, #208]	@ (80007fc <main+0x21c>)
  800072c:	4832      	ldr	r0, [pc, #200]	@ (80007f8 <main+0x218>)
  800072e:	f000 fe01 	bl	8001334 <find_packet>
@@ -587,7 +587,7 @@ int main(void)
  8000736:	7efb      	ldrb	r3, [r7, #27]
  8000738:	2b00      	cmp	r3, #0
  800073a:	d031      	beq.n	80007a0 <main+0x1c0>
-				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+8) {
  800073c:	2300      	movs	r3, #0
  800073e:	623b      	str	r3, [r7, #32]
  8000740:	e025      	b.n	800078e <main+0x1ae>
@@ -634,7 +634,7 @@ int main(void)
  8000782:	7811      	ldrb	r1, [r2, #0]
  8000784:	4a1f      	ldr	r2, [pc, #124]	@ (8000804 <main+0x224>)
  8000786:	54d1      	strb	r1, [r2, r3]
-				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * 15); i = i+8) {
+				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+8) {
  8000788:	6a3b      	ldr	r3, [r7, #32]
  800078a:	3308      	adds	r3, #8
  800078c:	623b      	str	r3, [r7, #32]
@@ -670,27 +670,27 @@ int main(void)
 	if (buff_flag_1) {
  80007b8:	e743      	b.n	8000642 <main+0x62>
  80007ba:	bf00      	nop
- 80007bc:	240005fc 	.word	0x240005fc
- 80007c0:	24000520 	.word	0x24000520
- 80007c4:	240006dc 	.word	0x240006dc
- 80007c8:	240004bc 	.word	0x240004bc
+ 80007bc:	240005f4 	.word	0x240005f4
+ 80007c0:	24000518 	.word	0x24000518
+ 80007c4:	240006d4 	.word	0x240006d4
+ 80007c8:	240004b4 	.word	0x240004b4
  80007cc:	42c80000 	.word	0x42c80000
- 80007d0:	2400c778 	.word	0x2400c778
- 80007d4:	2400662c 	.word	0x2400662c
- 80007d8:	2400c779 	.word	0x2400c779
- 80007dc:	240095d4 	.word	0x240095d4
- 80007e0:	2400c77c 	.word	0x2400c77c
- 80007e4:	2400c57c 	.word	0x2400c57c
- 80007e8:	2400c788 	.word	0x2400c788
- 80007ec:	2400c780 	.word	0x2400c780
- 80007f0:	2400c784 	.word	0x2400c784
- 80007f4:	2400c78c 	.word	0x2400c78c
- 80007f8:	2400c674 	.word	0x2400c674
- 80007fc:	2400c768 	.word	0x2400c768
- 8000800:	240248c9 	.word	0x240248c9
- 8000804:	2400c79c 	.word	0x2400c79c
- 8000808:	24000648 	.word	0x24000648
- 800080c:	2400c77a 	.word	0x2400c77a
+ 80007d0:	2400bad0 	.word	0x2400bad0
+ 80007d4:	24005fe4 	.word	0x24005fe4
+ 80007d8:	2400bad1 	.word	0x2400bad1
+ 80007dc:	24008c6c 	.word	0x24008c6c
+ 80007e0:	2400bad4 	.word	0x2400bad4
+ 80007e4:	2400b8f4 	.word	0x2400b8f4
+ 80007e8:	2400bae0 	.word	0x2400bae0
+ 80007ec:	2400bad8 	.word	0x2400bad8
+ 80007f0:	2400badc 	.word	0x2400badc
+ 80007f4:	2400bae4 	.word	0x2400bae4
+ 80007f8:	2400b9dc 	.word	0x2400b9dc
+ 80007fc:	2400bac0 	.word	0x2400bac0
+ 8000800:	24022321 	.word	0x24022321
+ 8000804:	2400baf4 	.word	0x2400baf4
+ 8000808:	24000640 	.word	0x24000640
+ 800080c:	2400bad2 	.word	0x2400bad2
 
 08000810 <SystemClock_Config>:
 /**
@@ -1177,7 +1177,7 @@ static void MX_ADC1_Init(void)
  8000ade:	3728      	adds	r7, #40	@ 0x28
  8000ae0:	46bd      	mov	sp, r7
  8000ae2:	bd80      	pop	{r7, pc}
- 8000ae4:	240004bc 	.word	0x240004bc
+ 8000ae4:	240004b4 	.word	0x240004b4
  8000ae8:	40022000 	.word	0x40022000
  8000aec:	0c900008 	.word	0x0c900008
 
@@ -1319,7 +1319,7 @@ static void MX_ADC2_Init(void)
  8000b9e:	46bd      	mov	sp, r7
  8000ba0:	bd80      	pop	{r7, pc}
  8000ba2:	bf00      	nop
- 8000ba4:	24000520 	.word	0x24000520
+ 8000ba4:	24000518 	.word	0x24000518
  8000ba8:	40022100 	.word	0x40022100
  8000bac:	0c900008 	.word	0x0c900008
 
@@ -1431,7 +1431,7 @@ static void MX_TIM2_Init(void)
  8000c42:	3720      	adds	r7, #32
  8000c44:	46bd      	mov	sp, r7
  8000c46:	bd80      	pop	{r7, pc}
- 8000c48:	240005fc 	.word	0x240005fc
+ 8000c48:	240005f4 	.word	0x240005f4
 
 08000c4c <MX_USART3_UART_Init>:
   * @brief USART3 Initialization Function
@@ -1540,7 +1540,7 @@ static void MX_USART3_UART_Init(void)
 }
  8000cd8:	bf00      	nop
  8000cda:	bd80      	pop	{r7, pc}
- 8000cdc:	24000648 	.word	0x24000648
+ 8000cdc:	24000640 	.word	0x24000640
  8000ce0:	40004800 	.word	0x40004800
 
 08000ce4 <MX_DMA_Init>:
@@ -1805,7 +1805,7 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc) {
  8000e9c:	3301      	adds	r3, #1
  8000e9e:	60fb      	str	r3, [r7, #12]
  8000ea0:	68fb      	ldr	r3, [r7, #12]
- 8000ea2:	f640 32e9 	movw	r2, #3049	@ 0xbe9
+ 8000ea2:	f640 3221 	movw	r2, #2849	@ 0xb21
  8000ea6:	4293      	cmp	r3, r2
  8000ea8:	dde1      	ble.n	8000e6e <HAL_ADC_ConvHalfCpltCallback+0x3e>
 	  }
@@ -1817,13 +1817,13 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc) {
  8000eb0:	bd80      	pop	{r7, pc}
  8000eb2:	bf00      	nop
  8000eb4:	58020000 	.word	0x58020000
- 8000eb8:	240005fc 	.word	0x240005fc
- 8000ebc:	2400c790 	.word	0x2400c790
- 8000ec0:	2400c77a 	.word	0x2400c77a
- 8000ec4:	2400c778 	.word	0x2400c778
- 8000ec8:	2400c779 	.word	0x2400c779
- 8000ecc:	240006dc 	.word	0x240006dc
- 8000ed0:	2400662c 	.word	0x2400662c
+ 8000eb8:	240005f4 	.word	0x240005f4
+ 8000ebc:	2400bae8 	.word	0x2400bae8
+ 8000ec0:	2400bad2 	.word	0x2400bad2
+ 8000ec4:	2400bad0 	.word	0x2400bad0
+ 8000ec8:	2400bad1 	.word	0x2400bad1
+ 8000ecc:	240006d4 	.word	0x240006d4
+ 8000ed0:	24005fe4 	.word	0x24005fe4
 
 08000ed4 <HAL_ADC_ConvCpltCallback>:
 
@@ -1880,7 +1880,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
  8000f1e:	e01c      	b.n	8000f5a <HAL_ADC_ConvCpltCallback+0x86>
 		  buffer_2[2*j] = (uint16_t)(adc_buf[j+ADC_BUF_LEN/2]&0x0000FFFF);
  8000f20:	68fb      	ldr	r3, [r7, #12]
- 8000f22:	f603 33ea 	addw	r3, r3, #3050	@ 0xbea
+ 8000f22:	f603 3322 	addw	r3, r3, #2850	@ 0xb22
  8000f26:	4a19      	ldr	r2, [pc, #100]	@ (8000f8c <HAL_ADC_ConvCpltCallback+0xb8>)
  8000f28:	f852 2023 	ldr.w	r2, [r2, r3, lsl #2]
  8000f2c:	68fb      	ldr	r3, [r7, #12]
@@ -1890,7 +1890,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
  8000f34:	f822 1013 	strh.w	r1, [r2, r3, lsl #1]
 		  buffer_2[2*j+1] = (uint16_t)(adc_buf[j+ADC_BUF_LEN/2]>>16);
  8000f38:	68fb      	ldr	r3, [r7, #12]
- 8000f3a:	f603 33ea 	addw	r3, r3, #3050	@ 0xbea
+ 8000f3a:	f603 3322 	addw	r3, r3, #2850	@ 0xb22
  8000f3e:	4a13      	ldr	r2, [pc, #76]	@ (8000f8c <HAL_ADC_ConvCpltCallback+0xb8>)
  8000f40:	f852 3023 	ldr.w	r3, [r2, r3, lsl #2]
  8000f44:	0c1a      	lsrs	r2, r3, #16
@@ -1905,7 +1905,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
  8000f56:	3301      	adds	r3, #1
  8000f58:	60fb      	str	r3, [r7, #12]
  8000f5a:	68fb      	ldr	r3, [r7, #12]
- 8000f5c:	f640 32e9 	movw	r2, #3049	@ 0xbe9
+ 8000f5c:	f640 3221 	movw	r2, #2849	@ 0xb21
  8000f60:	4293      	cmp	r3, r2
  8000f62:	dddd      	ble.n	8000f20 <HAL_ADC_ConvCpltCallback+0x4c>
 	  }
@@ -1916,15 +1916,15 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc) {
  8000f68:	46bd      	mov	sp, r7
  8000f6a:	bd80      	pop	{r7, pc}
  8000f6c:	58020000 	.word	0x58020000
- 8000f70:	240005fc 	.word	0x240005fc
- 8000f74:	2400c794 	.word	0x2400c794
- 8000f78:	2400c790 	.word	0x2400c790
- 8000f7c:	2400c798 	.word	0x2400c798
- 8000f80:	2400c77a 	.word	0x2400c77a
- 8000f84:	2400c779 	.word	0x2400c779
- 8000f88:	2400c778 	.word	0x2400c778
- 8000f8c:	240006dc 	.word	0x240006dc
- 8000f90:	240095d4 	.word	0x240095d4
+ 8000f70:	240005f4 	.word	0x240005f4
+ 8000f74:	2400baec 	.word	0x2400baec
+ 8000f78:	2400bae8 	.word	0x2400bae8
+ 8000f7c:	2400baf0 	.word	0x2400baf0
+ 8000f80:	2400bad2 	.word	0x2400bad2
+ 8000f84:	2400bad1 	.word	0x2400bad1
+ 8000f88:	2400bad0 	.word	0x2400bad0
+ 8000f8c:	240006d4 	.word	0x240006d4
+ 8000f90:	24008c6c 	.word	0x24008c6c
 
 08000f94 <demodulate>:
 
@@ -1953,7 +1953,7 @@ int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
  8000fb4:	9300      	str	r3, [sp, #0]
  8000fb6:	23fb      	movs	r3, #251	@ 0xfb
  8000fb8:	4a25      	ldr	r2, [pc, #148]	@ (8001050 <demodulate+0xbc>)
- 8000fba:	f241 71d4 	movw	r1, #6100	@ 0x17d4
+ 8000fba:	f241 6144 	movw	r1, #5700	@ 0x1644
  8000fbe:	4822      	ldr	r0, [pc, #136]	@ (8001048 <demodulate+0xb4>)
  8000fc0:	f00c f8ca 	bl	800d158 <arm_conv_f32>
     // readjust window
@@ -2017,12 +2017,12 @@ int demodulate(const uint16_t * samples, int * symbs, params_r * params) {
  800103e:	3720      	adds	r7, #32
  8001040:	46bd      	mov	sp, r7
  8001042:	bd80      	pop	{r7, pc}
- 8001044:	2400c7a0 	.word	0x2400c7a0
- 8001048:	240126f0 	.word	0x240126f0
- 800104c:	2401e590 	.word	0x2401e590
+ 8001044:	2400baf8 	.word	0x2400baf8
+ 8001048:	24011408 	.word	0x24011408
+ 800104c:	2401c628 	.word	0x2401c628
  8001050:	24000000 	.word	0x24000000
  8001054:	42fa0000 	.word	0x42fa0000
- 8001058:	45c67000 	.word	0x45c67000
+ 8001058:	45b9f000 	.word	0x45b9f000
  800105c:	00000000 	.word	0x00000000
 
 08001060 <costas_loop>:
@@ -2255,7 +2255,7 @@ void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
  80012b0:	3301      	adds	r3, #1
  80012b2:	f8c7 30b4 	str.w	r3, [r7, #180]	@ 0xb4
  80012b6:	f8d7 30b4 	ldr.w	r3, [r7, #180]	@ 0xb4
- 80012ba:	f241 72d8 	movw	r2, #6104	@ 0x17d8
+ 80012ba:	f241 6248 	movw	r2, #5704	@ 0x1648
  80012be:	4293      	cmp	r3, r2
  80012c0:	f77f af11 	ble.w	80010e6 <costas_loop+0x86>
         }
@@ -2291,80 +2291,80 @@ void costas_loop(float * norm_samples, float * samples_d, params_r * params) {
  800131c:	401921fb 	.word	0x401921fb
  8001320:	41080000 	.word	0x41080000
  8001324:	3dcccccd 	.word	0x3dcccccd
- 8001328:	3e4ccccd 	.word	0x3e4ccccd
+ 8001328:	3e3851ec 	.word	0x3e3851ec
  800132c:	240003ec 	.word	0x240003ec
- 8001330:	24018640 	.word	0x24018640
+ 8001330:	24016d18 	.word	0x24016d18
 
 08001334 <find_packet>:
 
 uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
  8001334:	b580      	push	{r7, lr}
- 8001336:	b0d6      	sub	sp, #344	@ 0x158
+ 8001336:	b0d0      	sub	sp, #320	@ 0x140
  8001338:	af02      	add	r7, sp, #8
- 800133a:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 800133e:	f5a3 73a2 	sub.w	r3, r3, #324	@ 0x144
+ 800133a:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 800133e:	f5a3 7396 	sub.w	r3, r3, #300	@ 0x12c
  8001342:	6018      	str	r0, [r3, #0]
- 8001344:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 8001348:	f5a3 73a4 	sub.w	r3, r3, #328	@ 0x148
+ 8001344:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 8001348:	f5a3 7398 	sub.w	r3, r3, #304	@ 0x130
  800134c:	6019      	str	r1, [r3, #0]
- 800134e:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 8001352:	f5a3 73a6 	sub.w	r3, r3, #332	@ 0x14c
+ 800134e:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 8001352:	f5a3 739a 	sub.w	r3, r3, #308	@ 0x134
  8001356:	601a      	str	r2, [r3, #0]
     // take cross correlation
-    float xcorr_out[SYMBOL_BUFF+14];
+    float xcorr_out[SYMBOL_BUFF+PACKET_HEADER_LEN-1];
     packet_found = 0;
  8001358:	4b60      	ldr	r3, [pc, #384]	@ (80014dc <find_packet+0x1a8>)
  800135a:	2200      	movs	r2, #0
  800135c:	701a      	strb	r2, [r3, #0]
-    arm_correlate_f32(key, 15, symbs, num_symbs, xcorr_out);
- 800135e:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 8001362:	f5a3 73a6 	sub.w	r3, r3, #332	@ 0x14c
+    arm_correlate_f32(packet_header, PACKET_HEADER_LEN, symbs, num_symbs, xcorr_out);
+ 800135e:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 8001362:	f5a3 739a 	sub.w	r3, r3, #308	@ 0x134
  8001366:	6819      	ldr	r1, [r3, #0]
- 8001368:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 800136c:	f5a3 72a2 	sub.w	r2, r3, #324	@ 0x144
+ 8001368:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 800136c:	f5a3 7296 	sub.w	r2, r3, #300	@ 0x12c
  8001370:	f107 0314 	add.w	r3, r7, #20
  8001374:	9300      	str	r3, [sp, #0]
  8001376:	460b      	mov	r3, r1
  8001378:	6812      	ldr	r2, [r2, #0]
- 800137a:	210f      	movs	r1, #15
+ 800137a:	210d      	movs	r1, #13
  800137c:	4858      	ldr	r0, [pc, #352]	@ (80014e0 <find_packet+0x1ac>)
  800137e:	f00b fc35 	bl	800cbec <arm_correlate_f32>
 
     // find packet
     int shift = 0;
  8001382:	2300      	movs	r3, #0
- 8001384:	f8c7 314c 	str.w	r3, [r7, #332]	@ 0x14c
-    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
- 8001388:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 800138c:	f5a3 73a6 	sub.w	r3, r3, #332	@ 0x14c
+ 8001384:	f8c7 3134 	str.w	r3, [r7, #308]	@ 0x134
+    for (int i = num_symbs-(NUM_PACKET_H-1)*PACKET_HEADER_LEN - 1; i >= 0; i--) {
+ 8001388:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 800138c:	f5a3 739a 	sub.w	r3, r3, #308	@ 0x134
  8001390:	681b      	ldr	r3, [r3, #0]
  8001392:	3b01      	subs	r3, #1
- 8001394:	f8c7 3148 	str.w	r3, [r7, #328]	@ 0x148
+ 8001394:	f8c7 3130 	str.w	r3, [r7, #304]	@ 0x130
  8001398:	e05c      	b.n	8001454 <find_packet+0x120>
-        if (fabs(xcorr_out[i]) > 14) {
- 800139a:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 800139e:	f5a3 729e 	sub.w	r2, r3, #316	@ 0x13c
- 80013a2:	f8d7 3148 	ldr.w	r3, [r7, #328]	@ 0x148
+        if (fabs(xcorr_out[i]) > PACKET_HEADER_LEN-1) {
+ 800139a:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 800139e:	f5a3 7292 	sub.w	r2, r3, #292	@ 0x124
+ 80013a2:	f8d7 3130 	ldr.w	r3, [r7, #304]	@ 0x130
  80013a6:	009b      	lsls	r3, r3, #2
  80013a8:	4413      	add	r3, r2
  80013aa:	edd3 7a00 	vldr	s15, [r3]
  80013ae:	eef0 7ae7 	vabs.f32	s15, s15
- 80013b2:	eeb2 7a0c 	vmov.f32	s14, #44	@ 0x41600000  14.0
+ 80013b2:	eeb2 7a08 	vmov.f32	s14, #40	@ 0x41400000  12.0
  80013b6:	eef4 7ac7 	vcmpe.f32	s15, s14
  80013ba:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  80013be:	dd44      	ble.n	800144a <find_packet+0x116>
-            shift = SYMBOL_BUFF+14-i;
- 80013c0:	f8d7 3148 	ldr.w	r3, [r7, #328]	@ 0x148
- 80013c4:	f1c3 034b 	rsb	r3, r3, #75	@ 0x4b
- 80013c8:	f8c7 314c 	str.w	r3, [r7, #332]	@ 0x14c
+            shift = SYMBOL_BUFF+PACKET_HEADER_LEN-1-i;
+ 80013c0:	f8d7 3130 	ldr.w	r3, [r7, #304]	@ 0x130
+ 80013c4:	f1c3 0345 	rsb	r3, r3, #69	@ 0x45
+ 80013c8:	f8c7 3134 	str.w	r3, [r7, #308]	@ 0x134
             packet_found = 1;
  80013cc:	4b43      	ldr	r3, [pc, #268]	@ (80014dc <find_packet+0x1a8>)
  80013ce:	2201      	movs	r2, #1
  80013d0:	701a      	strb	r2, [r3, #0]
             if (xcorr_out[i] < 0) {
- 80013d2:	f507 73a8 	add.w	r3, r7, #336	@ 0x150
- 80013d6:	f5a3 729e 	sub.w	r2, r3, #316	@ 0x13c
- 80013da:	f8d7 3148 	ldr.w	r3, [r7, #328]	@ 0x148
+ 80013d2:	f507 739c 	add.w	r3, r7, #312	@ 0x138
+ 80013d6:	f5a3 7292 	sub.w	r2, r3, #292	@ 0x124
+ 80013da:	f8d7 3130 	ldr.w	r3, [r7, #304]	@ 0x130
  80013de:	009b      	lsls	r3, r3, #2
  80013e0:	4413      	add	r3, r2
  80013e2:	edd3 7a00 	vldr	s15, [r3]
@@ -2379,42 +2379,42 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
  80013f0:	e034      	b.n	800145c <find_packet+0x128>
 				for (int j = 0; j < BITS; j++) {
  80013f2:	2300      	movs	r3, #0
- 80013f4:	f8c7 3144 	str.w	r3, [r7, #324]	@ 0x144
+ 80013f4:	f8c7 312c 	str.w	r3, [r7, #300]	@ 0x12c
  80013f8:	e022      	b.n	8001440 <find_packet+0x10c>
 					symbs[shift + j] = symbs[shift+ j]*-1;
- 80013fa:	f8d7 214c 	ldr.w	r2, [r7, #332]	@ 0x14c
- 80013fe:	f8d7 3144 	ldr.w	r3, [r7, #324]	@ 0x144
+ 80013fa:	f8d7 2134 	ldr.w	r2, [r7, #308]	@ 0x134
+ 80013fe:	f8d7 312c 	ldr.w	r3, [r7, #300]	@ 0x12c
  8001402:	4413      	add	r3, r2
  8001404:	009b      	lsls	r3, r3, #2
- 8001406:	f507 72a8 	add.w	r2, r7, #336	@ 0x150
- 800140a:	f5a2 72a2 	sub.w	r2, r2, #324	@ 0x144
+ 8001406:	f507 729c 	add.w	r2, r7, #312	@ 0x138
+ 800140a:	f5a2 7296 	sub.w	r2, r2, #300	@ 0x12c
  800140e:	6812      	ldr	r2, [r2, #0]
  8001410:	4413      	add	r3, r2
  8001412:	edd3 7a00 	vldr	s15, [r3]
- 8001416:	f8d7 214c 	ldr.w	r2, [r7, #332]	@ 0x14c
- 800141a:	f8d7 3144 	ldr.w	r3, [r7, #324]	@ 0x144
+ 8001416:	f8d7 2134 	ldr.w	r2, [r7, #308]	@ 0x134
+ 800141a:	f8d7 312c 	ldr.w	r3, [r7, #300]	@ 0x12c
  800141e:	4413      	add	r3, r2
  8001420:	009b      	lsls	r3, r3, #2
- 8001422:	f507 72a8 	add.w	r2, r7, #336	@ 0x150
- 8001426:	f5a2 72a2 	sub.w	r2, r2, #324	@ 0x144
+ 8001422:	f507 729c 	add.w	r2, r7, #312	@ 0x138
+ 8001426:	f5a2 7296 	sub.w	r2, r2, #300	@ 0x12c
  800142a:	6812      	ldr	r2, [r2, #0]
  800142c:	4413      	add	r3, r2
  800142e:	eef1 7a67 	vneg.f32	s15, s15
  8001432:	edc3 7a00 	vstr	s15, [r3]
 				for (int j = 0; j < BITS; j++) {
- 8001436:	f8d7 3144 	ldr.w	r3, [r7, #324]	@ 0x144
+ 8001436:	f8d7 312c 	ldr.w	r3, [r7, #300]	@ 0x12c
  800143a:	3301      	adds	r3, #1
- 800143c:	f8c7 3144 	str.w	r3, [r7, #324]	@ 0x144
- 8001440:	f8d7 3144 	ldr.w	r3, [r7, #324]	@ 0x144
+ 800143c:	f8c7 312c 	str.w	r3, [r7, #300]	@ 0x12c
+ 8001440:	f8d7 312c 	ldr.w	r3, [r7, #300]	@ 0x12c
  8001444:	2b0f      	cmp	r3, #15
  8001446:	ddd8      	ble.n	80013fa <find_packet+0xc6>
             break;
  8001448:	e008      	b.n	800145c <find_packet+0x128>
-    for (int i = num_symbs-(NUM_PACKET_H-1)*15 - 1; i >= 0; i--) {
- 800144a:	f8d7 3148 	ldr.w	r3, [r7, #328]	@ 0x148
+    for (int i = num_symbs-(NUM_PACKET_H-1)*PACKET_HEADER_LEN - 1; i >= 0; i--) {
+ 800144a:	f8d7 3130 	ldr.w	r3, [r7, #304]	@ 0x130
  800144e:	3b01      	subs	r3, #1
- 8001450:	f8c7 3148 	str.w	r3, [r7, #328]	@ 0x148
- 8001454:	f8d7 3148 	ldr.w	r3, [r7, #328]	@ 0x148
+ 8001450:	f8c7 3130 	str.w	r3, [r7, #304]	@ 0x130
+ 8001454:	f8d7 3130 	ldr.w	r3, [r7, #304]	@ 0x130
  8001458:	2b00      	cmp	r3, #0
  800145a:	da9e      	bge.n	800139a <find_packet+0x66>
         }
@@ -2432,15 +2432,15 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
     // convert symbols to bits
     for (int i = 0; i < BITS; i++) {
  8001468:	2300      	movs	r3, #0
- 800146a:	f8c7 3140 	str.w	r3, [r7, #320]	@ 0x140
+ 800146a:	f8c7 3128 	str.w	r3, [r7, #296]	@ 0x128
  800146e:	e02b      	b.n	80014c8 <find_packet+0x194>
         bits[i] = (symbs[shift+i]+1)*0.5;
- 8001470:	f8d7 214c 	ldr.w	r2, [r7, #332]	@ 0x14c
- 8001474:	f8d7 3140 	ldr.w	r3, [r7, #320]	@ 0x140
+ 8001470:	f8d7 2134 	ldr.w	r2, [r7, #308]	@ 0x134
+ 8001474:	f8d7 3128 	ldr.w	r3, [r7, #296]	@ 0x128
  8001478:	4413      	add	r3, r2
  800147a:	009b      	lsls	r3, r3, #2
- 800147c:	f507 72a8 	add.w	r2, r7, #336	@ 0x150
- 8001480:	f5a2 72a2 	sub.w	r2, r2, #324	@ 0x144
+ 800147c:	f507 729c 	add.w	r2, r7, #312	@ 0x138
+ 8001480:	f5a2 7296 	sub.w	r2, r2, #300	@ 0x12c
  8001484:	6812      	ldr	r2, [r2, #0]
  8001486:	4413      	add	r3, r2
  8001488:	edd3 7a00 	vldr	s15, [r3]
@@ -2449,9 +2449,9 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
  8001494:	eeb7 7ae7 	vcvt.f64.f32	d7, s15
  8001498:	eeb6 6b00 	vmov.f64	d6, #96	@ 0x3f000000  0.5
  800149c:	ee27 7b06 	vmul.f64	d7, d7, d6
- 80014a0:	f8d7 3140 	ldr.w	r3, [r7, #320]	@ 0x140
- 80014a4:	f507 72a8 	add.w	r2, r7, #336	@ 0x150
- 80014a8:	f5a2 72a4 	sub.w	r2, r2, #328	@ 0x148
+ 80014a0:	f8d7 3128 	ldr.w	r3, [r7, #296]	@ 0x128
+ 80014a4:	f507 729c 	add.w	r2, r7, #312	@ 0x138
+ 80014a8:	f5a2 7298 	sub.w	r2, r2, #304	@ 0x130
  80014ac:	6812      	ldr	r2, [r2, #0]
  80014ae:	4413      	add	r3, r2
  80014b0:	eefc 7bc7 	vcvt.u32.f64	s15, d7
@@ -2460,10 +2460,10 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
  80014ba:	b2d2      	uxtb	r2, r2
  80014bc:	701a      	strb	r2, [r3, #0]
     for (int i = 0; i < BITS; i++) {
- 80014be:	f8d7 3140 	ldr.w	r3, [r7, #320]	@ 0x140
+ 80014be:	f8d7 3128 	ldr.w	r3, [r7, #296]	@ 0x128
  80014c2:	3301      	adds	r3, #1
- 80014c4:	f8c7 3140 	str.w	r3, [r7, #320]	@ 0x140
- 80014c8:	f8d7 3140 	ldr.w	r3, [r7, #320]	@ 0x140
+ 80014c4:	f8c7 3128 	str.w	r3, [r7, #296]	@ 0x128
+ 80014c8:	f8d7 3128 	ldr.w	r3, [r7, #296]	@ 0x128
  80014cc:	2b0f      	cmp	r3, #15
  80014ce:	ddcf      	ble.n	8001470 <find_packet+0x13c>
     }
@@ -2471,10 +2471,10 @@ uint8_t find_packet(float * symbs, uint8_t * bits, const int num_symbs) {
  80014d0:	2301      	movs	r3, #1
 }
  80014d2:	4618      	mov	r0, r3
- 80014d4:	f507 77a8 	add.w	r7, r7, #336	@ 0x150
+ 80014d4:	f507 779c 	add.w	r7, r7, #312	@ 0x138
  80014d8:	46bd      	mov	sp, r7
  80014da:	bd80      	pop	{r7, pc}
- 80014dc:	240248c8 	.word	0x240248c8
+ 80014dc:	24022320 	.word	0x24022320
  80014e0:	24000404 	.word	0x24000404
 
 080014e4 <MPU_Config>:
@@ -2614,7 +2614,7 @@ void normalize(const uint16_t * samples, float * norm_samples) {
  8001584:	3301      	adds	r3, #1
  8001586:	617b      	str	r3, [r7, #20]
  8001588:	697b      	ldr	r3, [r7, #20]
- 800158a:	f241 72d3 	movw	r2, #6099	@ 0x17d3
+ 800158a:	f241 6243 	movw	r2, #5699	@ 0x1643
  800158e:	4293      	cmp	r3, r2
  8001590:	dde8      	ble.n	8001564 <normalize+0x1c>
     }
@@ -2650,7 +2650,7 @@ void normalize(const uint16_t * samples, float * norm_samples) {
  80015dc:	3301      	adds	r3, #1
  80015de:	613b      	str	r3, [r7, #16]
  80015e0:	693b      	ldr	r3, [r7, #16]
- 80015e2:	f241 72d3 	movw	r2, #6099	@ 0x17d3
+ 80015e2:	f241 6243 	movw	r2, #5699	@ 0x1643
  80015e6:	4293      	cmp	r3, r2
  80015e8:	ddde      	ble.n	80015a8 <normalize+0x60>
     }
@@ -2698,7 +2698,7 @@ void normalize(const uint16_t * samples, float * norm_samples) {
  8001654:	3301      	adds	r3, #1
  8001656:	60fb      	str	r3, [r7, #12]
  8001658:	68fb      	ldr	r3, [r7, #12]
- 800165a:	f241 72d3 	movw	r2, #6099	@ 0x17d3
+ 800165a:	f241 6243 	movw	r2, #5699	@ 0x1643
  800165e:	4293      	cmp	r3, r2
  8001660:	dde0      	ble.n	8001624 <normalize+0xdc>
     }
@@ -2708,8 +2708,8 @@ void normalize(const uint16_t * samples, float * norm_samples) {
  8001666:	3720      	adds	r7, #32
  8001668:	46bd      	mov	sp, r7
  800166a:	bd80      	pop	{r7, pc}
- 800166c:	45bea000 	.word	0x45bea000
- 8001670:	45be9800 	.word	0x45be9800
+ 800166c:	45b22000 	.word	0x45b22000
+ 8001670:	45b21800 	.word	0x45b21800
  8001674:	00000000 	.word	0x00000000
 
 08001678 <timing_recovery>:
@@ -2793,7 +2793,7 @@ int timing_recovery(float * filtered_samps, float * symbs, params_r * params) {
  800170a:	3301      	adds	r3, #1
  800170c:	62bb      	str	r3, [r7, #40]	@ 0x28
  800170e:	6abb      	ldr	r3, [r7, #40]	@ 0x28
- 8001710:	f241 72d2 	movw	r2, #6098	@ 0x17d2
+ 8001710:	f241 6242 	movw	r2, #5698	@ 0x1642
  8001714:	4293      	cmp	r3, r2
  8001716:	ddcb      	ble.n	80016b0 <timing_recovery+0x38>
     }
@@ -2865,7 +2865,7 @@ int timing_recovery(float * filtered_samps, float * symbs, params_r * params) {
         }
         if (bit_len==SYMBOL_BUFF) {
  80017d4:	6b7b      	ldr	r3, [r7, #52]	@ 0x34
- 80017d6:	2b3d      	cmp	r3, #61	@ 0x3d
+ 80017d6:	2b39      	cmp	r3, #57	@ 0x39
  80017d8:	d049      	beq.n	800186e <timing_recovery+0x1f6>
             break;
         }
@@ -2919,7 +2919,7 @@ int timing_recovery(float * filtered_samps, float * symbs, params_r * params) {
  800185c:	3301      	adds	r3, #1
  800185e:	627b      	str	r3, [r7, #36]	@ 0x24
  8001860:	6a7b      	ldr	r3, [r7, #36]	@ 0x24
- 8001862:	f241 72d3 	movw	r2, #6099	@ 0x17d3
+ 8001862:	f241 6243 	movw	r2, #5699	@ 0x1643
  8001866:	4293      	cmp	r3, r2
  8001868:	f77f af59 	ble.w	800171e <timing_recovery+0xa6>
  800186c:	e000      	b.n	8001870 <timing_recovery+0x1f8>
@@ -2968,7 +2968,7 @@ int timing_recovery(float * filtered_samps, float * symbs, params_r * params) {
  80018dc:	400921fb 	.word	0x400921fb
  80018e0:	3dcccccd 	.word	0x3dcccccd
  80018e4:	3d4ccccd 	.word	0x3d4ccccd
- 80018e8:	240248cc 	.word	0x240248cc
+ 80018e8:	24022324 	.word	0x24022324
  80018ec:	42c80000 	.word	0x42c80000
 
 080018f0 <wrap_to_pi>:
@@ -3278,10 +3278,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
  8001b1c:	46bd      	mov	sp, r7
  8001b1e:	bd80      	pop	{r7, pc}
  8001b20:	40022000 	.word	0x40022000
- 8001b24:	2402a818 	.word	0x2402a818
+ 8001b24:	24027c30 	.word	0x24027c30
  8001b28:	58024400 	.word	0x58024400
  8001b2c:	58020000 	.word	0x58020000
- 8001b30:	24000584 	.word	0x24000584
+ 8001b30:	2400057c 	.word	0x2400057c
  8001b34:	40020010 	.word	0x40020010
  8001b38:	40022100 	.word	0x40022100
 
@@ -3643,7 +3643,7 @@ void DMA1_Stream0_IRQHandler(void)
  8001cca:	bf00      	nop
  8001ccc:	bd80      	pop	{r7, pc}
  8001cce:	bf00      	nop
- 8001cd0:	24000584 	.word	0x24000584
+ 8001cd0:	2400057c 	.word	0x2400057c
 
 08001cd4 <ADC_IRQHandler>:
 
@@ -3669,8 +3669,8 @@ void ADC_IRQHandler(void)
 }
  8001ce4:	bf00      	nop
  8001ce6:	bd80      	pop	{r7, pc}
- 8001ce8:	240004bc 	.word	0x240004bc
- 8001cec:	24000520 	.word	0x24000520
+ 8001ce8:	240004b4 	.word	0x240004b4
+ 8001cec:	24000518 	.word	0x24000518
 
 08001cf0 <USART3_IRQHandler>:
 
@@ -3694,7 +3694,7 @@ void USART3_IRQHandler(void)
  8001cfa:	bf00      	nop
  8001cfc:	bd80      	pop	{r7, pc}
  8001cfe:	bf00      	nop
- 8001d00:	24000648 	.word	0x24000648
+ 8001d00:	24000640 	.word	0x24000640
 
 08001d04 <SystemInit>:
   *         configuration.
@@ -3968,13 +3968,13 @@ LoopFillZerobss:
   ldr r0, =_sdata
  8001e30:	24000000 	.word	0x24000000
   ldr r1, =_edata
- 8001e34:	240004a0 	.word	0x240004a0
+ 8001e34:	24000498 	.word	0x24000498
   ldr r2, =_sidata
  8001e38:	0800e940 	.word	0x0800e940
   ldr r2, =_sbss
- 8001e3c:	240004a0 	.word	0x240004a0
+ 8001e3c:	24000498 	.word	0x24000498
   ldr r4, =_ebss
- 8001e40:	2402a958 	.word	0x2402a958
+ 8001e40:	24027d70 	.word	0x24027d70
 
 08001e44 <BDMA1_IRQHandler>:
  * @retval None       
@@ -4075,8 +4075,8 @@ HAL_StatusTypeDef HAL_Init(void)
  8001eae:	bd80      	pop	{r7, pc}
  8001eb0:	58024400 	.word	0x58024400
  8001eb4:	0800e708 	.word	0x0800e708
- 8001eb8:	24000444 	.word	0x24000444
- 8001ebc:	24000440 	.word	0x24000440
+ 8001eb8:	2400043c 	.word	0x2400043c
+ 8001ebc:	24000438 	.word	0x24000438
 
 08001ec0 <HAL_InitTick>:
   *       implementation  in user file.
@@ -4152,9 +4152,9 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
  8001f1a:	3708      	adds	r7, #8
  8001f1c:	46bd      	mov	sp, r7
  8001f1e:	bd80      	pop	{r7, pc}
- 8001f20:	2400044c 	.word	0x2400044c
- 8001f24:	24000440 	.word	0x24000440
- 8001f28:	24000448 	.word	0x24000448
+ 8001f20:	24000444 	.word	0x24000444
+ 8001f24:	24000438 	.word	0x24000438
+ 8001f28:	24000440 	.word	0x24000440
 
 08001f2c <HAL_IncTick>:
  * @note This function is declared as __weak to be overwritten in case of other
@@ -4180,8 +4180,8 @@ __weak void HAL_IncTick(void)
  8001f44:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001f48:	4770      	bx	lr
  8001f4a:	bf00      	nop
- 8001f4c:	2400044c 	.word	0x2400044c
- 8001f50:	2402a81c 	.word	0x2402a81c
+ 8001f4c:	24000444 	.word	0x24000444
+ 8001f50:	24027c34 	.word	0x24027c34
 
 08001f54 <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other
@@ -4201,7 +4201,7 @@ __weak uint32_t HAL_GetTick(void)
  8001f60:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001f64:	4770      	bx	lr
  8001f66:	bf00      	nop
- 8001f68:	2402a81c 	.word	0x2402a81c
+ 8001f68:	24027c34 	.word	0x24027c34
 
 08001f6c <HAL_GetREVID>:
 /**
@@ -5459,7 +5459,7 @@ HAL_StatusTypeDef HAL_ADC_Init(ADC_HandleTypeDef *hadc)
  80025fe:	3724      	adds	r7, #36	@ 0x24
  8002600:	46bd      	mov	sp, r7
  8002602:	bd90      	pop	{r4, r7, pc}
- 8002604:	24000440 	.word	0x24000440
+ 8002604:	24000438 	.word	0x24000438
  8002608:	053e2d63 	.word	0x053e2d63
  800260c:	40022000 	.word	0x40022000
  8002610:	40022100 	.word	0x40022100
@@ -7456,7 +7456,7 @@ HAL_StatusTypeDef HAL_ADC_ConfigChannel(ADC_HandleTypeDef *hadc, ADC_ChannelConf
  80031ac:	40022000 	.word	0x40022000
  80031b0:	40022100 	.word	0x40022100
  80031b4:	cb840000 	.word	0xcb840000
- 80031b8:	24000440 	.word	0x24000440
+ 80031b8:	24000438 	.word	0x24000438
  80031bc:	053e2d63 	.word	0x053e2d63
  80031c0:	bac04000 	.word	0xbac04000
  80031c4:	cfb80000 	.word	0xcfb80000
@@ -12791,7 +12791,7 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma)
  80054a6:	b2db      	uxtb	r3, r3
  80054a8:	e02e      	b.n	8005508 <HAL_DMA_IRQHandler+0x208>
  80054aa:	bf00      	nop
- 80054ac:	24000440 	.word	0x24000440
+ 80054ac:	24000438 	.word	0x24000438
  80054b0:	1b4e81b5 	.word	0x1b4e81b5
  80054b4:	40020010 	.word	0x40020010
  80054b8:	40020028 	.word	0x40020028
@@ -18571,9 +18571,9 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8007a26:	bf00      	nop
  8007a28:	58024400 	.word	0x58024400
  8007a2c:	0800e708 	.word	0x0800e708
- 8007a30:	24000444 	.word	0x24000444
- 8007a34:	24000440 	.word	0x24000440
- 8007a38:	24000448 	.word	0x24000448
+ 8007a30:	2400043c 	.word	0x2400043c
+ 8007a34:	24000438 	.word	0x24000438
+ 8007a38:	24000440 	.word	0x24000440
 
 08007a3c <HAL_RCC_MCOConfig>:
   *          This parameter can be one of the following values:
@@ -19105,8 +19105,8 @@ uint32_t HAL_RCC_GetHCLKFreq(void)
  8007e52:	bd80      	pop	{r7, pc}
  8007e54:	58024400 	.word	0x58024400
  8007e58:	0800e708 	.word	0x0800e708
- 8007e5c:	24000444 	.word	0x24000444
- 8007e60:	24000440 	.word	0x24000440
+ 8007e5c:	2400043c 	.word	0x2400043c
+ 8007e60:	24000438 	.word	0x24000438
 
 08007e64 <HAL_RCC_GetPCLK1Freq>:
   * @note   Each time PCLK1 changes, this function must be called to update the
@@ -31472,7 +31472,7 @@ static void UARTEx_SetNbDataToProcess(UART_HandleTypeDef *huart)
  800d69e:	6818      	ldr	r0, [r3, #0]
  800d6a0:	4770      	bx	lr
  800d6a2:	bf00      	nop
- 800d6a4:	24000450 	.word	0x24000450
+ 800d6a4:	24000448 	.word	0x24000448
 
 0800d6a8 <__libc_init_array>:
  800d6a8:	b570      	push	{r4, r5, r6, lr}
