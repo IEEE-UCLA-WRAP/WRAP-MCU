@@ -104,24 +104,45 @@ void recalculate_output(uint8_t * message, uint16_t len) {
 	memcpy(symbol_buffer, packet_header, 4*PACKET_HEADER_LEN);
 
 	// put the message in the symbol buffer
-	for(int i = 0; i < len; i++) {
-		parity_bits[0] = (bool)(temp_msg[i] & 0x80) ^ (bool)(temp_msg[i] & 0x40) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x08) ^ (bool)(temp_msg[i] & 0x02);
-		parity_bits[1] = (bool)(temp_msg[i] & 0x80) ^ (bool)(temp_msg[i] & 0x20) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x04) ^ (bool)(temp_msg[i] & 0x02);
-		parity_bits[2] = (bool)(temp_msg[i] & 0x40) ^ (bool)(temp_msg[i] & 0x20) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x01);
-		parity_bits[3] = (bool)(temp_msg[i] & 0x08) ^ (bool)(temp_msg[i] & 0x04) ^ (bool)(temp_msg[i] & 0x02) ^ (bool)(temp_msg[i] & 0x01);
+	#if HAMMING_CODE_FLAG
+		for(int i = 0; i < len; i++) {
+			parity_bits[0] = (bool)(temp_msg[i] & 0x80) ^ (bool)(temp_msg[i] & 0x40) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x08) ^ (bool)(temp_msg[i] & 0x02);
+			parity_bits[1] = (bool)(temp_msg[i] & 0x80) ^ (bool)(temp_msg[i] & 0x20) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x04) ^ (bool)(temp_msg[i] & 0x02);
+			parity_bits[2] = (bool)(temp_msg[i] & 0x40) ^ (bool)(temp_msg[i] & 0x20) ^ (bool)(temp_msg[i] & 0x10) ^ (bool)(temp_msg[i] & 0x01);
+			parity_bits[3] = (bool)(temp_msg[i] & 0x08) ^ (bool)(temp_msg[i] & 0x04) ^ (bool)(temp_msg[i] & 0x02) ^ (bool)(temp_msg[i] & 0x01);
 
-		parity_bit_index = 0;
-		for(int j = 0; j < BITS_PER_CHAR; j++) {
-			if(((j+1) & j) == 0){
-				symbol_buffer[PACKET_HEADER_LEN + BITS_PER_CHAR*i + j] = 2 * parity_bits[parity_bit_index] - 1;
-				parity_bit_index++;
-			}
-			else {
-				symbol_buffer[PACKET_HEADER_LEN + BITS_PER_CHAR*i + j] = 2 * (int)(bool)(temp_msg[i] & 0x80) - 1;;
-				temp_msg[i] = temp_msg[i] << 1;
+			parity_bit_index = 0;
+			for(int j = 0; j < BITS_PER_CHAR; j++) {
+				if(((j+1) & j) == 0){
+					symbol_buffer[PACKET_HEADER_LEN + BITS_PER_CHAR*i + j] = 2 * parity_bits[parity_bit_index] - 1;
+					parity_bit_index++;
+				}
+				else {
+					symbol_buffer[PACKET_HEADER_LEN + BITS_PER_CHAR*i + j] = 2 * (int)(bool)(temp_msg[i] & 0x80) - 1;;
+					temp_msg[i] = temp_msg[i] << 1;
+				}
 			}
 		}
-	}
+
+	#elif REPETITION_CODE_FLAG
+		for(int i = 0; i < len; i++) {
+			for(int j = 0; j < 8; j++) {
+				for(int k = 0; k < REPETITION_INVERSE_CODERATE; k++){
+					symbol_buffer[PACKET_HEADER_LEN + BITS_PER_CHAR - 1 + BITS_PER_CHAR*i - REPETITION_INVERSE_CODERATE*j - k] = 2 * (int)(temp_msg[i] & 0x01) - 1;
+				}
+				temp_msg[i] = temp_msg[i] >> 1;
+			}
+		}
+
+	#else
+		for(int i = 0; i < len; i++) {
+			for(int j = 0; j < 8; j++) {
+				symbol_buffer[PACKET_HEADER_LEN + 8*i + 8 - 1 - j] = 2 * (int)(temp_msg[i] & 0x01) - 1;
+				temp_msg[i] = temp_msg[i] >> 1;
+			}
+		}
+
+	#endif
 
     // upsample symbols
     for (int i = 0; i < DAC_BUF_LEN; i++) {
