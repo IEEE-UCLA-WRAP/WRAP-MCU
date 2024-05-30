@@ -104,7 +104,7 @@ int timing_recovery(float* rrc_samps_in, float* symbs_out, params_r* params) {
 
 
 		int offset = 0;
-		int offset2 = 1;
+		int offset2 = 0;
 		prev_symb = 25 * rrc_samps_in[lrintf(offset*params->sps)];
 		symbs_out[0] = prev_symb;
 
