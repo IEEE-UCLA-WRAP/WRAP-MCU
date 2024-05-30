@@ -22,7 +22,7 @@ typedef struct params_r {
 } params_r;
 
 static float lp[ORDER + 1] = {0.238053579626575,0.064423148855147,0.0684583456734438,0.0684583456734438,0.0644231488551473,0.238053579626575};
-static float key[15] = {1, 1, 1, -1, -1, -1, 1, -1, -1, 1, 1, -1, 1, -1, 1}; // packet header
+static float packet_header[PACKET_HEADER_LEN] = {1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1}; // packet header
 void normalize(const uint16_t * samples, float * norm_samples);
 int timing_recovery(float * filtered_samps, float * symbs, params_r * params);
 float wrap_to_pi(const float x);
