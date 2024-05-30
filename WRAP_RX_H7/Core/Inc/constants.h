@@ -15,10 +15,29 @@
 #define FC 1000000 //1000000 //900000.
 #define RS 50000
 #define SPS (FS/RS)
-#define NUM_CHARS 10
-#define BITS (NUM_CHARS*8)
+
+#define REPETITION_CODE_FLAG 0
+#define HAMMING_CODE_FLAG 1
+
+#define NUM_CHARS 2
+
+#if HAMMING_CODE_FLAG
+	#define NUM_PARITY_BITS 4
+	#define BITS_PER_CHAR (8 + NUM_PARITY_BITS)
+
+#elif REPETITION_CODE_FLAG
+	#define REPETITION_INVERSE_CODERATE 3
+	#define BITS_PER_CHAR (8 * REPETITION_INVERSE_CODERATE)
+
+#else
+	#define BITS_PER_CHAR 8
+
+#endif
+
+#define BITS (NUM_CHARS*BITS_PER_CHAR)
 #define NUM_PACKET_H 1
-#define PACKET_HEADER_LEN 13
+#define PACKET_HEADER_LEN 15
+
 #define NUM_SYMBS (BITS+(NUM_PACKET_H*PACKET_HEADER_LEN))                // number of symbols being transmitted (data and header)
 
 #define SYMBOL_BUFF (2*NUM_SYMBS - 1)

@@ -64,6 +64,7 @@ uint16_t buffer_2[ADC_BUF_LEN];			// adc buffer
 float temp_symbs[2*NUM_SYMBS];				// 2x N_BUFF for slack
 float symbol_buffer[SYMBOL_BUFF];			// symbol buffer
 uint8_t bits[BITS];
+uint8_t parity_check;
 
 volatile uint8_t buff_flag_1 = RESET;
 volatile uint8_t buff_flag_2 = RESET;
@@ -202,15 +203,66 @@ int main(void)
 	  if (total_symbs >= NUM_SYMBS) {
 			packet_found = find_packet(symbol_buffer, bits, SYMBOL_BUFF);
 			if (packet_found) {
-				for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+8) {
-					result = 0;
-					for(int j = 0; j < 8; j++)
-					{
-						result <<= 1;
-						result += bits[i + j];
+				#if HAMMING_CODE_FLAG
+					for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+BITS_PER_CHAR) {
+						result = 0;
+						parity_check = 0;
+
+						parity_check += bits[i+7] ^ bits[i+8] ^ bits[i+9] ^ bits[i+10] ^ bits[i+11];
+						parity_check <<= 1;
+
+						parity_check += bits[i+3] ^ bits[i+4] ^ bits[i+5] ^ bits[i+6] ^ bits[i+11];
+						parity_check <<= 1;
+
+						parity_check += bits[i+1] ^ bits[i+2] ^ bits[i+5] ^ bits[i+6] ^ bits[i+9] ^ bits[i+10];
+						parity_check <<= 1;
+
+						parity_check += bits[i+0] ^ bits[i+2] ^ bits[i+4] ^ bits[i+6] ^ bits[i+8] ^ bits[i+10];
+
+						for(int j = 0; j < BITS_PER_CHAR; j++)
+						{
+							if(((j+1) & j) != 0){
+								result <<= 1;
+								if(parity_check != j+1){
+									result += bits[i + j];
+								}
+								else{
+									result += -1*bits[i + j] + 1;
+								}
+							}
+						}
+
+						t_str[i/BITS_PER_CHAR] = result;
 					}
-					t_str[i>>3] = result;
-				}
+
+				#elif REPETITION_CODE_FLAG
+					for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+BITS_PER_CHAR) {
+						result = 0;
+						for(int j = 0; j < 8; j++)
+						{
+							uint8_t total_one_bits = 0;
+							for(int k = 0; k < REPETITION_INVERSE_CODERATE; k++){
+								total_one_bits += bits[i+REPETITION_INVERSE_CODERATE*j+k];
+							}
+							uint8_t decoded_bit = (uint8_t) (total_one_bits >= (REPETITION_INVERSE_CODERATE>>1) + 1);
+
+							result <<= 1;
+							result += decoded_bit;
+						}
+						t_str[i/BITS_PER_CHAR] = result;
+					}
+				#else
+					for (int i = 0; i < NUM_SYMBS - (NUM_PACKET_H * PACKET_HEADER_LEN); i = i+8) {
+						result = 0;
+						for(int j = 0; j < 8; j++)
+						{
+							result <<= 1;
+							result += bits[i + j];
+						}
+						t_str[i>>3] = result;
+					}
+
+				#endif
 				HAL_UART_Transmit(&huart3, (uint8_t *)t_str, sizeof(t_str), 100);
 			}
 
