@@ -1,3 +1,0 @@
-../Core/Src/receiver.c:20:6:normalize	4
-../Core/Src/receiver.c:45:5:timing_recovery	8
-../Core/Src/receiver.c:87:7:wrap_to_pi	2
