@@ -12,14 +12,14 @@
 
 #define RRC_LEN 501             // length of square root raised cosine filter
 #define FS 5000000
-#define FC 910000 //1000000 //900000.
+#define FC 1000000 
 #define RS 50000
 #define SPS (FS/RS)
 
-#define REPETITION_CODE_FLAG 0
+#define REPETITION_CODE_FLAG 1
 #define HAMMING_CODE_FLAG 0
 
-#define NUM_CHARS 5
+#define NUM_CHARS 6
 
 #if HAMMING_CODE_FLAG
 	#define NUM_PARITY_BITS 4

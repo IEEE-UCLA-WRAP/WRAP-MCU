@@ -1,4 +1,4 @@
-../Core/Src/main.c:108:5:main	56	static
+../Core/Src/main.c:108:5:main	64	static
 ../Core/Src/main.c:284:6:SystemClock_Config	152	static
 ../Core/Src/main.c:373:6:PeriphCommonClock_Config	200	static
 ../Core/Src/main.c:400:13:MX_ADC1_Init	48	static
@@ -11,6 +11,6 @@
 ../Core/Src/main.c:700:6:HAL_ADC_ConvCpltCallback	24	static
 ../Core/Src/main.c:719:5:demodulate	48	static
 ../Core/Src/main.c:741:6:costas_loop	216	static
-../Core/Src/main.c:780:9:find_packet	520	static
+../Core/Src/main.c:780:9:find_packet	1352	static
 ../Core/Src/main.c:815:6:MPU_Config	24	static
 ../Core/Src/main.c:846:6:Error_Handler	4	static,ignoring_inline_asm

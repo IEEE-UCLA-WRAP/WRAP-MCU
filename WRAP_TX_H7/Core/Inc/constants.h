@@ -14,8 +14,8 @@
 #define RS 50000
 #define SPS (FS/RS)
 
-#define REPETITION_CODE_FLAG 0
-#define HAMMING_CODE_FLAG 1
+#define REPETITION_CODE_FLAG 1
+#define HAMMING_CODE_FLAG 0
 
 #define NUM_CHARS 6
 
