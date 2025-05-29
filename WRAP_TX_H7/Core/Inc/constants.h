@@ -18,6 +18,7 @@
 #define HAMMING_CODE_FLAG 0
 
 #define NUM_CHARS 6
+#define UART_CHARS 1
 
 #if HAMMING_CODE_FLAG
 	#define NUM_PARITY_BITS 4
