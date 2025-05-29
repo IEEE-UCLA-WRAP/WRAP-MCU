@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "constants.h"
 #include "receiver.h"
 
@@ -9,6 +10,8 @@ float wrap_to_pi(const float x);
 int sign(float x);
 
 float zc[ADC_BUF_LEN-1];
+
+int NORMALIZE_FLAG = 1;
 /*
 Takes samples and turns them into symbols.
 samples: samples from ADC
@@ -20,25 +23,53 @@ allocated for longer than samples/sps + some margin
 
 void normalize(const uint16_t * samples, float * norm_samples) {
         // Normalize signal
-    float var = 0, mean = 0;
-    // find mean
-    for (int i = 0; i < ADC_BUF_LEN; i++) {
-        mean += (float)samples[i];
-    }
-    mean /= ADC_BUF_LEN;
-    // find sample variance
-    for (int i = 0; i < ADC_BUF_LEN; i++) {
-        float temp = (float)samples[i]-mean;
-        var += temp * temp;
-    }
-    var = var / (ADC_BUF_LEN-1);
-    var = sqrt(var)*25;
+	if (NORMALIZE_FLAG) {
 
-    // normalize
-    // divide by 60 arbitrary, just done to get to an ampltiude I used to tune gain values
-    for (int i = 0; i < ADC_BUF_LEN; i++) {
-        norm_samples[i] = (((float)samples[i]) - mean)/var;
-    }
+		float var = 0, mean = 0;
+		// find mean
+		for (int i = 0; i < ADC_BUF_LEN; i++) {
+			mean += (float)samples[i];
+		}
+		mean /= ADC_BUF_LEN;
+		// find sample variance
+		for (int i = 0; i < ADC_BUF_LEN; i++) {
+			float temp = (float)samples[i]-mean;
+			var += temp * temp;
+		}
+		var = var / (ADC_BUF_LEN-1);
+		var = sqrt(var)*25;
+
+		// normalize
+		// divide by 60 arbitrary, just done to get to an ampltiude I used to tune gain values
+		for (int i = 0; i < ADC_BUF_LEN; i++) {
+			norm_samples[i] = (((float)samples[i]) - mean)/var;
+		}
+
+	} else {
+
+		float alpha_rise = 0.1;
+		float signal_max = 0;
+		float signal_gain = 1;
+		float abs_sample = 0;
+
+		float mean = 0;
+			// find mean
+			for (int i = 0; i < ADC_BUF_LEN; i++) {
+				mean += (float)samples[i];
+			}
+			mean /= ADC_BUF_LEN;
+
+		for (int i = 0; i < ADC_BUF_LEN; i++) {
+			abs_sample = (float)samples[i];
+			if (abs_sample > signal_max) {
+				signal_max = alpha_rise * signal_max + (1-alpha_rise) * abs_sample;
+			}
+			signal_gain = 1 / signal_max;
+			norm_samples[i] = (samples[i] - mean) * signal_gain;
+		}
+
+	}
+
 }
 
 float symb = 0;
