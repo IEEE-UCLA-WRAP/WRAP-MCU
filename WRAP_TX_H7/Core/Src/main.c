@@ -208,6 +208,8 @@ int main(void)
   HAL_UART_Receive_DMA(&huart3, (uint8_t *)rx_msg, sizeof(rx_msg));
   HAL_DAC_Start_DMA(&hdac1, DAC_CHANNEL_1, (uint32_t*)dac_buf, DAC_BUF_LEN + RRC_LEN - 1, DAC_ALIGN_12B_R);
 
+  recalculate_output("hello!", NUM_CHARS);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
